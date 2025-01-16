@@ -46,4 +46,8 @@ public class CoralSubsystem extends SubsystemBase {
     public double getIntakeCurrent() {
         return intakeMotor.getOutputCurrent();
     }
+
+    public double getIntakeTemperature() {
+        return intakeMotor.getMotorTemperature();
+    }
 }
