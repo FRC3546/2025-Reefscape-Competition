@@ -11,20 +11,25 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-public class CoralSubsystem extends SubsystemBase {
+public class AlgaeSubsystem extends SubsystemBase {
 
     private SparkMax pivotMotor;
-    private SparkMax intakeMotor;
+    private SparkMax leftIntakeMotor;
+    private SparkMax rightIntakeMotor;
     private SparkAbsoluteEncoder throughBoreEncoder;
 
     private SparkClosedLoopController pivotMotorPID;
     private SparkMaxConfig pivotMotorConfig;
 
+    private SparkMaxConfig leftIntakeMotorConfig;
+    private SparkMaxConfig rightIntakeMotorConfig;
+
     public enum PivotPositions {
-        L1(0),
-        L2(0),
-        L3(0),
-        L4(0);
+        Ground(0),
+        Processor(0),
+        Barge(0),
+        Stowed(0),
+        Reef(0);
 
         private final double value;
 
@@ -38,9 +43,22 @@ public class CoralSubsystem extends SubsystemBase {
 
     }
 
-    public CoralSubsystem() {
-        intakeMotor = new SparkMax(72, MotorType.kBrushless);
-        pivotMotor = new SparkMax(71, MotorType.kBrushless);
+    public AlgaeSubsystem() {
+        pivotMotor = new SparkMax(81, MotorType.kBrushless);
+        leftIntakeMotor = new SparkMax(82, MotorType.kBrushless);
+        rightIntakeMotor = new SparkMax(83, MotorType.kBrushless);
+
+        leftIntakeMotorConfig = new SparkMaxConfig();
+        leftIntakeMotorConfig.smartCurrentLimit(20);
+        leftIntakeMotor.configure(leftIntakeMotorConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+
+        rightIntakeMotorConfig = new SparkMaxConfig();
+        rightIntakeMotorConfig.follow(leftIntakeMotor.getDeviceId(), false);
+        rightIntakeMotorConfig.smartCurrentLimit(20);
+        rightIntakeMotor.configure(rightIntakeMotorConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+
         pivotMotorPID = pivotMotor.getClosedLoopController();
         pivotMotorConfig = new SparkMaxConfig();
         throughBoreEncoder = pivotMotor.getAbsoluteEncoder();
@@ -69,19 +87,19 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public void setIntakeMotorSpeed(double speed) {
-        intakeMotor.set(speed);
+        leftIntakeMotor.set(speed);
     }
 
     public void stopIntakeMotor() {
-        intakeMotor.stopMotor();
+        leftIntakeMotor.stopMotor();
     }
 
     public double getIntakeCurrent() {
-        return intakeMotor.getOutputCurrent();
+        return leftIntakeMotor.getOutputCurrent();
     }
 
     public double getIntakeTemperature() {
-        return intakeMotor.getMotorTemperature();
+        return leftIntakeMotor.getMotorTemperature();
     }
 
     public void pidSetPosition(PivotPositions position) {
