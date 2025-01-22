@@ -24,7 +24,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     private SparkMaxConfig leftIntakeMotorConfig;
     private SparkMaxConfig rightIntakeMotorConfig;
 
-    public enum PivotPositions {
+    public enum AlgaePivotPositions {
         Ground(0),
         Processor(0),
         Barge(0),
@@ -33,7 +33,7 @@ public class AlgaeSubsystem extends SubsystemBase {
 
         private final double value;
 
-        PivotPositions(double value) {
+        AlgaePivotPositions(double value) {
             this.value = value;
         }
 
@@ -102,7 +102,7 @@ public class AlgaeSubsystem extends SubsystemBase {
         return leftIntakeMotor.getMotorTemperature();
     }
 
-    public void pidSetPosition(PivotPositions position) {
+    public void pidSetPosition(AlgaePivotPositions position) {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 }
