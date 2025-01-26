@@ -9,19 +9,24 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 
 public class CoralSubsystem extends SubsystemBase {
 
     private SparkMax pivotMotor;
-    private SparkMax intakeMotor;
+    private VictorSPX intakeMotor;
     private SparkAbsoluteEncoder throughBoreEncoder;
 
     private SparkClosedLoopController pivotMotorPID;
     private SparkMaxConfig pivotMotorConfig;
 
     public enum CoralPivotPositions {
-        L1(0),
+        L1(0.15),
         L2(0),
         L3(0),
         L4(0);
@@ -39,16 +44,21 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public CoralSubsystem() {
-        intakeMotor = new SparkMax(72, MotorType.kBrushless);
-        pivotMotor = new SparkMax(71, MotorType.kBrushless);
+        intakeMotor = new VictorSPX(52);
+        pivotMotor = new SparkMax(51, MotorType.kBrushless);
         pivotMotorPID = pivotMotor.getClosedLoopController();
         pivotMotorConfig = new SparkMaxConfig();
         throughBoreEncoder = pivotMotor.getAbsoluteEncoder();
 
+        intakeMotor.setNeutralMode(NeutralMode.Brake);
+        intakeMotor.setInverted(true);
+
+       
         pivotMotorConfig.closedLoop
-                .p(0.001)
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .p(0.015)
                 .d(0)
-                .outputRange(-1, 1);
+                .outputRange(-.6, .6);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -69,22 +79,19 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public void setIntakeMotorSpeed(double speed) {
-        intakeMotor.set(speed);
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, speed);
     }
 
     public void stopIntakeMotor() {
-        intakeMotor.stopMotor();
-    }
-
-    public double getIntakeCurrent() {
-        return intakeMotor.getOutputCurrent();
-    }
-
-    public double getIntakeTemperature() {
-        return intakeMotor.getMotorTemperature();
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, 0);
     }
 
     public void pidSetPosition(CoralPivotPositions position) {
-        pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
+        pivotMotorPID.setReference(0.15, ControlType.kPosition);
     }
+
+    public void setMotorSpeed(double speed){
+        pivotMotor.set(speed);
+    }
+
 }
