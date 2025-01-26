@@ -12,7 +12,6 @@ public class CANdleSubsystem extends SubsystemBase {
 
     CANdle leds;
     CANdleConfiguration defaultConfig;
-    StrobeAnimation strobe = new StrobeAnimation(0, 0, 0);
 
     public enum Color {
         red,
@@ -22,7 +21,7 @@ public class CANdleSubsystem extends SubsystemBase {
     }
 
     public CANdleSubsystem() {
-        leds = new CANdle(0);
+        leds = new CANdle(61);
         defaultConfig = new CANdleConfiguration();
         defaultConfig.stripType = LEDStripType.RGB;
         defaultConfig.brightnessScalar = 0.25;
@@ -52,29 +51,23 @@ public class CANdleSubsystem extends SubsystemBase {
     public void strobe(Color color) {
         switch (color) {
             case red:
-                leds.animate(null);
-                strobe.setB(0);
-                strobe.setR(255);
-                strobe.setG(0);
-                leds.animate(strobe);
+            leds.clearAnimation(0);
+            leds.animate(new StrobeAnimation(255, 0, 0, 0 , 1, 8));
                 break;
             case yellow:
-                leds.animate(null);
-                strobe.setB(0);
-                strobe.setR(255);
-                strobe.setG(255);
-                leds.animate(strobe);
+            leds.clearAnimation(0);
+                leds.animate(new StrobeAnimation(255, 255, 0, 0, 1, 8));
                 break;
             case green:
-                leds.animate(null);
-                strobe.setB(0);
-                strobe.setR(0);
-                strobe.setG(255);
-                leds.animate(strobe);
+            leds.clearAnimation(0);
+                leds.animate(new StrobeAnimation(0, 255, 0, 0, 1, 8));
                 break;
 
             default:
                 break;
         }
+    }
+    public void clear(){
+        leds.clearAnimation(0);
     }
 }
