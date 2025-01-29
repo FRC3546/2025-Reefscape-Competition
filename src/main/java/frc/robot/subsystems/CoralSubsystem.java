@@ -87,7 +87,7 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public void pidSetPosition(CoralPivotPositions position) {
-        pivotMotorPID.setReference(0.15, ControlType.kPosition);
+        pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 
     public void setMotorSpeed(double speed){
