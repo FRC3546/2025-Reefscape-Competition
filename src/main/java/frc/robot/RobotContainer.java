@@ -31,9 +31,7 @@ public class RobotContainer {
   private void configureBindings() {
     coralJoystick.button(7).toggleOnTrue((new IntakeCoral(coralSubsystem, 0.3)));
     coralJoystick.button(9).toggleOnTrue((new OuttakeCoral(coralSubsystem, -0.3)));
-    // coralJoystick.button(1).toggleOnTrue(new InstantCommand(() -> coralSubsystem.pidSetPosition(CoralPivotPositions.L1))).toggleOnFalse(new InstantCommand(() -> coralSubsystem.stopPivotMotor()));
-    coralJoystick.button(1).toggleOnTrue(new runMotor(coralSubsystem, 0.1));
-
+    coralJoystick.button(1).toggleOnTrue(new InstantCommand(() -> coralSubsystem.pidSetPosition(CoralPivotPositions.L1))).toggleOnFalse(new InstantCommand(() -> coralSubsystem.stopPivotMotor()));
   }
 
   public Command getAutonomousCommand() {
