@@ -25,6 +25,7 @@ public class RobotContainer {
   public void updateDashboard(){
     SmartDashboard.putNumber("Coral Pivot Encoder", coralSubsystem.getPivotPosition());
     SmartDashboard.putNumber("PID Target", 0);
+    SmartDashboard.putNumber("enum value", CoralPivotPositions.L1.getValue());
   }
 
   private void configureBindings() {
