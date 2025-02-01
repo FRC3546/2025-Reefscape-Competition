@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
@@ -26,7 +27,7 @@ public class CoralSubsystem extends SubsystemBase {
     private SparkMaxConfig pivotMotorConfig;
 
     public enum CoralPivotPositions {
-        L1(0.15),
+        L1(0.2),
         L2(0),
         L3(0),
         L4(0);
@@ -56,9 +57,13 @@ public class CoralSubsystem extends SubsystemBase {
        
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .p(0.015)
+                .p(4)
                 .d(0)
-                .outputRange(-.6, .6);
+                .outputRange(-.5, .5);
+        pivotMotorConfig
+            .inverted(true)
+            .smartCurrentLimit(40)
+            .idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -89,9 +94,4 @@ public class CoralSubsystem extends SubsystemBase {
     public void pidSetPosition(CoralPivotPositions position) {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
-
-    public void setMotorSpeed(double speed){
-        pivotMotor.set(speed);
-    }
-
 }
