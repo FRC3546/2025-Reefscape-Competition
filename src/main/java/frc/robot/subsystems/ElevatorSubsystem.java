@@ -26,8 +26,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         L3(0),
         L4(0),
         Barge(0),
-        ReefHigh(0),
-        ReefLow(0),
+        AlgaeReefHigh(0),
+        AlgaeReefLow(0),
         Processor(0);
 
         private final double value;
@@ -69,6 +69,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public double getElevatorVelocity() {
         return throughBoreEncoder.getVelocity();
+    }
+
+    public void setElevatorSpeed(double speed){
+        leftElevatorMotor.set(speed);
     }
 
     public void pidSetPosition(ElevatorPositions position) {
