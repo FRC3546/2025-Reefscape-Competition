@@ -31,9 +31,9 @@ import frc.robot.commands.OuttakeCoral;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
-  private final CoralSubsystem coralSubsystem = new CoralSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private CommandJoystick coralJoystick = new CommandJoystick(0);
+  // private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  // private CommandJoystick coralJoystick = new CommandJoystick(0);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
@@ -173,9 +173,9 @@ public class RobotContainer {
   }
 
   public void updateDashboard(){
-    SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
-    SmartDashboard.putNumber("Left Elevator Position", elevatorSubsystem.getLeftElevatorMotorEncoder());
-    SmartDashboard.putNumber("Right Elevator Position", elevatorSubsystem.getRightElevatorMotorEncoder());
-    SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
+    // SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
+    // SmartDashboard.putNumber("Left Elevator Position", elevatorSubsystem.getLeftElevatorMotorEncoder());
+    // SmartDashboard.putNumber("Right Elevator Position", elevatorSubsystem.getRightElevatorMotorEncoder());
+    // SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
   }
 }
