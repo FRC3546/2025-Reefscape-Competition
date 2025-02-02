@@ -8,7 +8,7 @@ public class OuttakeCoral extends Command {
     CoralSubsystem coralSubsystem;
     double speed;
 
-    public OuttakeCoral(CoralSubsystem coralSubsystem, double speed){
+    public OuttakeCoral(CoralSubsystem coralSubsystem, double speed) {
         this.coralSubsystem = coralSubsystem;
         this.speed = -(Math.abs(speed));
         addRequirements(coralSubsystem);
@@ -18,9 +18,10 @@ public class OuttakeCoral extends Command {
     public void initialize() {
         coralSubsystem.setIntakeMotorSpeed(speed);
     }
- 
+
     @Override
-    public void execute() {}
+    public void execute() {
+    }
 
     @Override
     public void end(boolean interrupted) {

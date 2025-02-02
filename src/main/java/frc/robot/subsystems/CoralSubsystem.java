@@ -16,7 +16,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-
 public class CoralSubsystem extends SubsystemBase {
 
     private SparkMax pivotMotor;
@@ -54,16 +53,15 @@ public class CoralSubsystem extends SubsystemBase {
         intakeMotor.setNeutralMode(NeutralMode.Brake);
         intakeMotor.setInverted(true);
 
-       
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .p(4)
                 .d(0)
                 .outputRange(-.5, .5);
         pivotMotorConfig
-            .inverted(true)
-            .smartCurrentLimit(40)
-            .idleMode(IdleMode.kBrake);
+                .inverted(true)
+                .smartCurrentLimit(40)
+                .idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

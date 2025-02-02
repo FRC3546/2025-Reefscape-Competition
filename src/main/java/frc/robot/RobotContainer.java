@@ -20,15 +20,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
-
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very
- * little robot logic should actually be handled in the {@link Robot} periodic
- * methods (other than the scheduler calls).
- * Instead, the structure of the robot (including subsystems, commands, and
- * trigger mappings) should be declared here.
- */import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.IntakeCoral;
@@ -38,10 +30,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.OuttakeCoral;
 
 public class RobotContainer {
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private CommandJoystick coralJoystick = new CommandJoystick(0);
   final CommandXboxController driverXbox = new CommandXboxController(0);
-  // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
 
@@ -110,8 +101,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  private final CoralSubsystem coralSubsystem = new CoralSubsystem();
-  private CommandJoystick coralJoystick = new CommandJoystick(0);
+
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -133,6 +123,8 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
+
+    // swerve logic
     // (Condition) ? Return-On-True : Return-on-False
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedAnglularVelocitySim);
