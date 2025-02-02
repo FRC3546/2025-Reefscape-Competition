@@ -28,9 +28,11 @@ import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.OuttakeCoral;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private CommandJoystick coralJoystick = new CommandJoystick(0);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -106,7 +108,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
   }
 
   /**
@@ -169,5 +170,12 @@ public class RobotContainer {
 
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
+  }
+
+  public void updateDashboard(){
+    SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
+    SmartDashboard.putNumber("Left Elevator Position", elevatorSubsystem.getLeftElevatorMotorEncoder());
+    SmartDashboard.putNumber("Right Elevator Position", elevatorSubsystem.getRightElevatorMotorEncoder());
+    SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
   }
 }

@@ -29,7 +29,8 @@ public class CoralSubsystem extends SubsystemBase {
         L1(0.2),
         L2(0),
         L3(0),
-        L4(0);
+        L4(0),
+        Stow(0);
 
         private final double value;
 
@@ -89,7 +90,13 @@ public class CoralSubsystem extends SubsystemBase {
         intakeMotor.set(VictorSPXControlMode.PercentOutput, 0);
     }
 
-    public void pidSetPosition(CoralPivotPositions position) {
+    public void setPIDPosition(CoralPivotPositions position) {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
+    }
+
+    public boolean pidWithinBounds(CoralPivotPositions position, double tolerance){
+        double upperbound = position.getValue() + tolerance;
+        double lowerbound = position.getValue() - tolerance;
+        return (getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound);
     }
 }

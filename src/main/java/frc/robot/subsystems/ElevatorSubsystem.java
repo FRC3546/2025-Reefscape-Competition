@@ -19,6 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkClosedLoopController leftElevatorMotorPID;
     private SparkMaxConfig leftElevatorMotorConfig;
     private SparkMaxConfig rightElevatorMotorConfig;
+    private ElevatorPositions targetElevatorPosition;
 
     public enum ElevatorPositions {
         L1(0),
@@ -39,10 +40,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         public double getValue() {
             return value;
         }
-
     }
 
     public ElevatorSubsystem() {
+        targetElevatorPosition = ElevatorPositions.L4;
         leftElevatorMotor = new SparkMax(0, MotorType.kBrushless);
         rightElevatorMotor = new SparkMax(0, MotorType.kBrushless);
         leftElevatorMotorPID = leftElevatorMotor.getClosedLoopController();
@@ -63,6 +64,14 @@ public class ElevatorSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
     }
 
+    public double getLeftElevatorMotorEncoder() {
+        return leftElevatorMotor.getEncoder().getPosition();
+    }
+
+    public double getRightElevatorMotorEncoder() {
+        return leftElevatorMotor.getEncoder().getPosition();
+    }
+
     public double getElevatorPosition() {
         return throughBoreEncoder.getPosition();
     }
@@ -71,11 +80,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         return throughBoreEncoder.getVelocity();
     }
 
-    public void setElevatorSpeed(double speed){
+    public void setElevatorSpeed(double speed) {
         leftElevatorMotor.set(speed);
     }
 
     public void pidSetPosition(ElevatorPositions position) {
+        targetElevatorPosition = position;
         leftElevatorMotorPID.setReference(position.getValue(), ControlType.kPosition);
+    }
+
+    public ElevatorPositions getElevatorTarget() {
+        return targetElevatorPosition;
     }
 }
