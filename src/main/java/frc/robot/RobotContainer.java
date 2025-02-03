@@ -31,12 +31,25 @@ import frc.robot.commands.OuttakeCoral;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
-  // private final CoralSubsystem coralSubsystem = new CoralSubsystem();
-  // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  // private CommandJoystick coralJoystick = new CommandJoystick(0);
+  private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private CommandJoystick coralJoystick = new CommandJoystick(1);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
+
+  private int L1Button = 9;
+  private int L2Button = 8;
+  private int L3Button = 5;
+  private int L4Button = 1;
+
+  private int disableAutoButton = 2;
+
+  private int leftOffsetButton = 10;
+  private int rightOffsetButton = 11;
+  private int coralIntakeButton = 6;
+  private int fireButton = 7;
+  private int coralAlgaeSelector = 3;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
