@@ -23,17 +23,23 @@ import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.CoralStationIntake;
 import frc.robot.commands.IntakeCoral;
+import frc.robot.commands.ManualElevator;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.OuttakeCoral;
+import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.Stow;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private CommandJoystick coralJoystick = new CommandJoystick(1);
+  private CommandJoystick testJoystick = new CommandJoystick(1);
+  // private CommandJoystick buttonBoard = new CommandJoystick(1);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
@@ -118,6 +124,7 @@ public class RobotContainer {
    */
 
   public RobotContainer() {
+    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> testJoystick.getY()));
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -138,6 +145,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    // buttonBoard.button(L1Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L1)));
+    // buttonBoard.button(L2Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L2)));
+    // buttonBoard.button(L3Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L3)));
+    // buttonBoard.button(L4Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L4)));
+
+    // buttonBoard.button(coralIntakeButton).onTrue(new CoralStationIntake(coralSubsystem, elevatorSubsystem));
+    // buttonBoard.button(fireButton).onTrue(new ScoreCoral(coralSubsystem, elevatorSubsystem, L1Button).andThen(new Stow(coralSubsystem, elevatorSubsystem)));
+    
     // swerve logic
     // (Condition) ? Return-On-True : Return-on-False
     drivebase.setDefaultCommand(

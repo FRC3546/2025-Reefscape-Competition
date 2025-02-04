@@ -30,7 +30,8 @@ public class CoralSubsystem extends SubsystemBase {
         L2(0),
         L3(0),
         L4(0),
-        Stow(0);
+        Stow(0),
+        CoralStation(0);
 
         private final double value;
 
