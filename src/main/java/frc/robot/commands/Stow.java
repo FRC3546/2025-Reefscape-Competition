@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -30,7 +29,7 @@ public class Stow extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        
+
     }
 
     @Override

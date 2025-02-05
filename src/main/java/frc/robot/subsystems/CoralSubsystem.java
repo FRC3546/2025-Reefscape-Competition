@@ -26,7 +26,7 @@ public class CoralSubsystem extends SubsystemBase {
     private SparkMaxConfig pivotMotorConfig;
 
     public enum CoralPivotPositions {
-        //increases moving towards the front
+        // increases moving towards the front
         L1(0.2),
         L2(0),
         L3(0),
@@ -98,7 +98,7 @@ public class CoralSubsystem extends SubsystemBase {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 
-    public boolean pidWithinBounds(CoralPivotPositions position, double tolerance){
+    public boolean pidWithinBounds(CoralPivotPositions position, double tolerance) {
         double upperbound = position.getValue() + tolerance;
         double lowerbound = position.getValue() - tolerance;
         return (getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound);

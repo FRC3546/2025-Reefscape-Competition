@@ -40,7 +40,7 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private CommandJoystick testJoystick = new CommandJoystick(1);
-  //private CommandJoystick buttonBoard = new CommandJoystick(1);
+  // private CommandJoystick buttonBoard = new CommandJoystick(1);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
@@ -125,8 +125,9 @@ public class RobotContainer {
    */
 
   public RobotContainer() {
-    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (-testJoystick.getY())/3));
-    //coralSubsystem.setDefaultCommand(new ManualCoral(coralSubsystem, () -> (testJoystick.getY()/4)));
+    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (-testJoystick.getY()) / 3));
+    // coralSubsystem.setDefaultCommand(new ManualCoral(coralSubsystem, () ->
+    // (testJoystick.getY()/4)));
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -147,14 +148,21 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // buttonBoard.button(L1Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L1)));
-    // buttonBoard.button(L2Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L2)));
-    // buttonBoard.button(L3Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L3)));
-    // buttonBoard.button(L4Button).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L4)));
+    // buttonBoard.button(L1Button).onTrue(new InstantCommand(() ->
+    // elevatorSubsystem.pidSetPosition(ElevatorPositions.L1)));
+    // buttonBoard.button(L2Button).onTrue(new InstantCommand(() ->
+    // elevatorSubsystem.pidSetPosition(ElevatorPositions.L2)));
+    // buttonBoard.button(L3Button).onTrue(new InstantCommand(() ->
+    // elevatorSubsystem.pidSetPosition(ElevatorPositions.L3)));
+    // buttonBoard.button(L4Button).onTrue(new InstantCommand(() ->
+    // elevatorSubsystem.pidSetPosition(ElevatorPositions.L4)));
 
-    // buttonBoard.button(coralIntakeButton).onTrue(new CoralStationIntake(coralSubsystem, elevatorSubsystem));
-    // buttonBoard.button(fireButton).onTrue(new ScoreCoral(coralSubsystem, elevatorSubsystem, L1Button).andThen(new Stow(coralSubsystem, elevatorSubsystem)));
-    
+    // buttonBoard.button(coralIntakeButton).onTrue(new
+    // CoralStationIntake(coralSubsystem, elevatorSubsystem));
+    // buttonBoard.button(fireButton).onTrue(new ScoreCoral(coralSubsystem,
+    // elevatorSubsystem, L1Button).andThen(new Stow(coralSubsystem,
+    // elevatorSubsystem)));
+
     // swerve logic
     // (Condition) ? Return-On-True : Return-on-False
     drivebase.setDefaultCommand(
@@ -202,10 +210,11 @@ public class RobotContainer {
     drivebase.setMotorBrake(brake);
   }
 
-  public void updateDashboard(){
+  public void updateDashboard() {
     SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
     SmartDashboard.putNumber("Front Elevator Position", elevatorSubsystem.getFrontElevatorMotorEncoder());
     SmartDashboard.putNumber("Back Elevator Position", elevatorSubsystem.getBackElevatorMotorEncoder());
-    // SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
+    // SmartDashboard.putNumber("Elevator Position",
+    // elevatorSubsystem.getElevatorPosition());
   }
 }

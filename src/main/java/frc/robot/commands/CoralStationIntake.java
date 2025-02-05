@@ -8,17 +8,16 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 
-public class CoralStationIntake extends SequentialCommandGroup{
+public class CoralStationIntake extends SequentialCommandGroup {
 
-    public CoralStationIntake(CoralSubsystem coralSubsystem, ElevatorSubsystem elevatorSubsystem){
+    public CoralStationIntake(CoralSubsystem coralSubsystem, ElevatorSubsystem elevatorSubsystem) {
 
         addCommands(
-            new ParallelDeadlineGroup(
-                new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.CoralStation)),
-                new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.CoralStation))),
-            new IntakeCoral(coralSubsystem, 0.3),
-            new Stow(coralSubsystem, elevatorSubsystem)
-        );
+                new ParallelDeadlineGroup(
+                        new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.CoralStation)),
+                        new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.CoralStation))),
+                new IntakeCoral(coralSubsystem, 0.3),
+                new Stow(coralSubsystem, elevatorSubsystem));
     }
-    
+
 }

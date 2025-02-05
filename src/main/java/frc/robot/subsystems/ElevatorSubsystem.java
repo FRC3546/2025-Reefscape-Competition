@@ -59,24 +59,24 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorPID = backElevatorMotor.getClosedLoopController();
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
-        //throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
+        // throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
 
         // backElevatorMotorConfig.softLimit
-        //     .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
-        //     .reverseSoftLimit(ElevatorPositions.MinimumHeight.getValue())
-        //     .forwardSoftLimitEnabled(false)
-        //     .reverseSoftLimitEnabled(false);
+        // .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
+        // .reverseSoftLimit(ElevatorPositions.MinimumHeight.getValue())
+        // .forwardSoftLimitEnabled(false)
+        // .reverseSoftLimitEnabled(false);
 
         // backElevatorMotorConfig.closedLoop
-        //         .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-        //         .p(0.001)
-        //         .d(0)
-        //         .outputRange(-1, 1);
+        // .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+        // .p(0.001)
+        // .d(0)
+        // .outputRange(-1, 1);
         backElevatorMotorConfig.closedLoop
                 .p(0.001)
                 .d(0)
                 .outputRange(-1, 1);
-        
+
         backElevatorMotor.configure(backElevatorMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
@@ -95,11 +95,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     // public double getElevatorPosition() {
-    //     return throughBoreEncoder.getPosition();
+    // return throughBoreEncoder.getPosition();
     // }
 
     // public double getElevatorVelocity() {
-    //     return throughBoreEncoder.getVelocity();
+    // return throughBoreEncoder.getVelocity();
     // }
 
     public void setElevatorSpeed(double speed) {
