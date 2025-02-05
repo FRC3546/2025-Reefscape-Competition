@@ -26,12 +26,15 @@ public class CoralSubsystem extends SubsystemBase {
     private SparkMaxConfig pivotMotorConfig;
 
     public enum CoralPivotPositions {
+        //increases moving towards the front
         L1(0.2),
         L2(0),
         L3(0),
         L4(0),
-        Stow(0),
-        CoralStation(0);
+        Stow(0.35),
+        CoralStation(0),
+        MinimumAngle(.14),
+        MaximumAngle(0);
 
         private final double value;
 
@@ -46,8 +49,8 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public CoralSubsystem() {
-        intakeMotor = new VictorSPX(52);
-        pivotMotor = new SparkMax(51, MotorType.kBrushless);
+        intakeMotor = new VictorSPX(55);
+        pivotMotor = new SparkMax(54, MotorType.kBrushless);
         pivotMotorPID = pivotMotor.getClosedLoopController();
         pivotMotorConfig = new SparkMaxConfig();
         throughBoreEncoder = pivotMotor.getAbsoluteEncoder();

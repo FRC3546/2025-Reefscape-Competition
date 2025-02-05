@@ -25,6 +25,7 @@ import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CoralStationIntake;
 import frc.robot.commands.IntakeCoral;
+import frc.robot.commands.ManualCoral;
 import frc.robot.commands.ManualElevator;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
@@ -39,7 +40,7 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private CommandJoystick testJoystick = new CommandJoystick(1);
-  // private CommandJoystick buttonBoard = new CommandJoystick(1);
+  //private CommandJoystick buttonBoard = new CommandJoystick(1);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
@@ -124,7 +125,8 @@ public class RobotContainer {
    */
 
   public RobotContainer() {
-    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> testJoystick.getY()));
+    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (-testJoystick.getY())/3));
+    //coralSubsystem.setDefaultCommand(new ManualCoral(coralSubsystem, () -> (testJoystick.getY()/4)));
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -201,9 +203,9 @@ public class RobotContainer {
   }
 
   public void updateDashboard(){
-    // SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
-    // SmartDashboard.putNumber("Left Elevator Position", elevatorSubsystem.getLeftElevatorMotorEncoder());
-    // SmartDashboard.putNumber("Right Elevator Position", elevatorSubsystem.getRightElevatorMotorEncoder());
+    SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
+    SmartDashboard.putNumber("Front Elevator Position", elevatorSubsystem.getFrontElevatorMotorEncoder());
+    SmartDashboard.putNumber("Back Elevator Position", elevatorSubsystem.getBackElevatorMotorEncoder());
     // SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
   }
 }

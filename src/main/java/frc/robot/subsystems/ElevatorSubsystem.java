@@ -51,50 +51,56 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public ElevatorSubsystem() {
+        // elevator direction good
+
         targetElevatorPosition = ElevatorPositions.Stow;
-        backElevatorMotor = new SparkMax(0, MotorType.kBrushless);
-        frontElevatorMotor = new SparkMax(0, MotorType.kBrushless);
+        backElevatorMotor = new SparkMax(50, MotorType.kBrushless);
+        frontElevatorMotor = new SparkMax(51, MotorType.kBrushless);
         backElevatorMotorPID = backElevatorMotor.getClosedLoopController();
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
-        throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
+        //throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
 
-        backElevatorMotorConfig.softLimit
-            .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
-            .reverseSoftLimit(ElevatorPositions.MinimumHeight.getValue())
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+        // backElevatorMotorConfig.softLimit
+        //     .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
+        //     .reverseSoftLimit(ElevatorPositions.MinimumHeight.getValue())
+        //     .forwardSoftLimitEnabled(false)
+        //     .reverseSoftLimitEnabled(false);
 
+        // backElevatorMotorConfig.closedLoop
+        //         .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+        //         .p(0.001)
+        //         .d(0)
+        //         .outputRange(-1, 1);
         backElevatorMotorConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
                 .p(0.001)
                 .d(0)
                 .outputRange(-1, 1);
         
-                backElevatorMotor.configure(backElevatorMotorConfig, ResetMode.kResetSafeParameters,
+        backElevatorMotor.configure(backElevatorMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
-        // right motor is follower
+        // front motor is follower
         frontElevatorMotorConfig.follow(backElevatorMotor.getDeviceId(), false);
         frontElevatorMotor.configure(frontElevatorMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
     }
 
-    public double getbackElevatorMotorEncoder() {
+    public double getBackElevatorMotorEncoder() {
         return backElevatorMotor.getEncoder().getPosition();
     }
 
-    public double getfrontElevatorMotorEncoder() {
+    public double getFrontElevatorMotorEncoder() {
         return backElevatorMotor.getEncoder().getPosition();
     }
 
-    public double getElevatorPosition() {
-        return throughBoreEncoder.getPosition();
-    }
+    // public double getElevatorPosition() {
+    //     return throughBoreEncoder.getPosition();
+    // }
 
-    public double getElevatorVelocity() {
-        return throughBoreEncoder.getVelocity();
-    }
+    // public double getElevatorVelocity() {
+    //     return throughBoreEncoder.getVelocity();
+    // }
 
     public void setElevatorSpeed(double speed) {
         backElevatorMotor.set(speed);
