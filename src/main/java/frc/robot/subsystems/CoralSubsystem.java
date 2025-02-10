@@ -12,18 +12,18 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.spark.SparkLimitSwitch;
 
 public class CoralSubsystem extends SubsystemBase {
 
+    private SparkLimitSwitch coralSensor;
     private SparkMax pivotMotor;
-    private VictorSPX intakeMotor;
+    private SparkMax intakeMotor;
     private SparkAbsoluteEncoder throughBoreEncoder;
 
     private SparkClosedLoopController pivotMotorPID;
     private SparkMaxConfig pivotMotorConfig;
+    private SparkMaxConfig intakeMotorConfig;
 
     public enum CoralPivotPositions {
         // increases moving towards the front
@@ -49,14 +49,17 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public CoralSubsystem() {
-        intakeMotor = new VictorSPX(55);
+        intakeMotor = new SparkMax(55, MotorType.kBrushed);
         pivotMotor = new SparkMax(54, MotorType.kBrushless);
-        pivotMotorPID = pivotMotor.getClosedLoopController();
+        coralSensor = intakeMotor.getForwardLimitSwitch();
+        intakeMotorConfig = new SparkMaxConfig();
         pivotMotorConfig = new SparkMaxConfig();
+        pivotMotorPID = pivotMotor.getClosedLoopController();
         throughBoreEncoder = pivotMotor.getAbsoluteEncoder();
 
-        intakeMotor.setNeutralMode(NeutralMode.Brake);
-        intakeMotor.setInverted(true);
+        intakeMotorConfig
+            .inverted(true)
+            .idleMode(IdleMode.kBrake);
 
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
@@ -67,6 +70,8 @@ public class CoralSubsystem extends SubsystemBase {
                 .inverted(true)
                 .smartCurrentLimit(40)
                 .idleMode(IdleMode.kBrake);
+        
+        intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -87,11 +92,15 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public void setIntakeMotorSpeed(double speed) {
-        intakeMotor.set(VictorSPXControlMode.PercentOutput, speed);
+        intakeMotor.set(speed);
     }
 
     public void stopIntakeMotor() {
-        intakeMotor.set(VictorSPXControlMode.PercentOutput, 0);
+        intakeMotor.stopMotor();
+    }
+
+    public boolean getCoralSensor(){
+        return coralSensor.isPressed();
     }
 
     public void setPIDPosition(CoralPivotPositions position) {

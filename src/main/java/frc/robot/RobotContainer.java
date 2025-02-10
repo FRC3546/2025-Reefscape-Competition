@@ -40,7 +40,7 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private CommandJoystick testJoystick = new CommandJoystick(1);
-  // private CommandJoystick buttonBoard = new CommandJoystick(1);
+  private CommandJoystick buttonBoard = new CommandJoystick(2);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
@@ -125,7 +125,8 @@ public class RobotContainer {
    */
 
   public RobotContainer() {
-    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (-testJoystick.getY()) / 3));
+    //elevatorSubsystem.zeroElevatorPosition();
+    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (testJoystick.getY()) / 1));
     // coralSubsystem.setDefaultCommand(new ManualCoral(coralSubsystem, () ->
     // (testJoystick.getY()/4)));
     // Configure the trigger bindings
@@ -214,7 +215,11 @@ public class RobotContainer {
     SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
     SmartDashboard.putNumber("Front Elevator Position", elevatorSubsystem.getFrontElevatorMotorEncoder());
     SmartDashboard.putNumber("Back Elevator Position", elevatorSubsystem.getBackElevatorMotorEncoder());
-    // SmartDashboard.putNumber("Elevator Position",
+    SmartDashboard.putBoolean("is Front Limit Switch enabled", elevatorSubsystem.getFrontElevatorLimitSwitch());
+    SmartDashboard.putBoolean("is Back Limit Switch enabled", elevatorSubsystem.getBackElevatorLimitSwitch());
+    SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
+    SmartDashboard.putNumber("Difference in velocity", elevatorSubsystem.differenceInVelocity());
+    SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValue());
     // elevatorSubsystem.getElevatorPosition());
   }
 }
