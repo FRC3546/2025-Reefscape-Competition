@@ -148,7 +148,6 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
-
     // buttonBoard.button(L1Button).onTrue(new InstantCommand(() ->
     // elevatorSubsystem.pidSetPosition(ElevatorPositions.L1)));
     // buttonBoard.button(L2Button).onTrue(new InstantCommand(() ->

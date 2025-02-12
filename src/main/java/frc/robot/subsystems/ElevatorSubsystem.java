@@ -16,10 +16,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
+    private double targetPos;
+    public double manualOffset = 0;
     private DigitalInput frontElevatorLimitSwitch;
     private DigitalInput backElevatorLimitSwitch;
     private SparkMax backElevatorMotor;
@@ -60,16 +64,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorLimitSwitch = new DigitalInput(0);
         frontElevatorLimitSwitch = new DigitalInput(1);
         targetElevatorPosition = ElevatorPositions.Stow;
-        backElevatorMotor = new SparkMax(50, MotorType.kBrushless);
-        frontElevatorMotor = new SparkMax(51, MotorType.kBrushless);
+        backElevatorMotor = new SparkMax(17, MotorType.kBrushless);
+        frontElevatorMotor = new SparkMax(18, MotorType.kBrushless);
         backElevatorMotorPID = backElevatorMotor.getClosedLoopController();
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
         // throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
 
+        
+
         backElevatorMotorConfig.softLimit
         .reverseSoftLimit(ElevatorPositions.MaxHeight.getValue())
-        .reverseSoftLimitEnabled(true)
+        .reverseSoftLimitEnabled(false)
         .forwardSoftLimit(.1)
         .forwardSoftLimitEnabled(false);
 
@@ -79,7 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .smartCurrentLimit(40);
 
         backElevatorMotorConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
                 .p(1)
                 .d(0)
                 .outputRange(-1, 1);
@@ -111,12 +117,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double getElevatorPosition() {
-        return backElevatorMotor.getEncoder().getPosition();
+        return getBackElevatorMotorEncoder();
     }
-
-    // public double getElevatorPosition() {
-    // return throughBoreEncoder.getPosition();
-    // }
 
     // public double getElevatorVelocity() {
     // return throughBoreEncoder.getVelocity();
@@ -128,7 +130,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void pidSetPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
-        backElevatorMotorPID.setReference(position.getValue(), ControlType.kPosition);
+        targetPos = position.getValue() + manualOffset;
+        backElevatorMotorPID.setReference(MathUtil.clamp(targetPos, 0.0, ElevatorPositions.MaxHeight.getValue()), ControlType.kPosition);
     }
 
     public ElevatorPositions getElevatorTarget() {
@@ -160,8 +163,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    @Override
    public void periodic(){
     if(getFrontElevatorLimitSwitch() && getElevatorPosition() != 0){
-        backElevatorMotor.getEncoder().setPosition(0);
-        frontElevatorMotor.getEncoder().setPosition(0);
+        throughBoreEncoder.setPosition(0);
     }
 
     if(getFrontElevatorLimitSwitch() && backElevatorMotor.get() > 0){

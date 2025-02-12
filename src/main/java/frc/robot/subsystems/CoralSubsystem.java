@@ -49,8 +49,8 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public CoralSubsystem() {
-        intakeMotor = new SparkMax(55, MotorType.kBrushed);
-        pivotMotor = new SparkMax(54, MotorType.kBrushless);
+        intakeMotor = new SparkMax(48, MotorType.kBrushed);
+        pivotMotor = new SparkMax(47, MotorType.kBrushless);
         coralSensor = intakeMotor.getForwardLimitSwitch();
         intakeMotorConfig = new SparkMaxConfig();
         pivotMotorConfig = new SparkMaxConfig();
