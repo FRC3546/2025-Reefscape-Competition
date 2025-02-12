@@ -69,7 +69,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorPID = backElevatorMotor.getClosedLoopController();
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
-        // throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
+        throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
 
         
 
@@ -117,12 +117,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double getElevatorPosition() {
-        return getBackElevatorMotorEncoder();
+        return throughBoreEncoder.getPosition();
     }
-
-    // public double getElevatorVelocity() {
-    // return throughBoreEncoder.getVelocity();
-    // }
 
     public void setElevatorSpeed(double speed) {
         backElevatorMotor.set(speed);
