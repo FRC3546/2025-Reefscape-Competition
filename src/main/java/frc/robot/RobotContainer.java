@@ -148,6 +148,7 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
+    testJoystick.button(7).onTrue(new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.Stow)));
     // buttonBoard.button(L1Button).onTrue(new InstantCommand(() ->
     // elevatorSubsystem.pidSetPosition(ElevatorPositions.L1)));
     // buttonBoard.button(L2Button).onTrue(new InstantCommand(() ->
@@ -219,6 +220,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
     SmartDashboard.putNumber("Difference in velocity", elevatorSubsystem.differenceInVelocity());
     SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValue());
+    SmartDashboard.putBoolean("coral break beam", coralSubsystem.getCoralSensor());
     // elevatorSubsystem.getElevatorPosition());
   }
 }

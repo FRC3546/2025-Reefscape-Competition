@@ -45,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Processor(0),
         Stow(0),
         CoralStation(0),
-        MaxHeight(-1250),
+        MaxHeight(25.5),
         MinimumHeight(0);
         //MAX = -1300
         private final double value;
@@ -70,18 +70,19 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
         throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
-
         
+        backElevatorMotorConfig.alternateEncoder
+            .countsPerRevolution(8192)
+            .setSparkMaxDataPortConfig()
+            .inverted(true);
 
         backElevatorMotorConfig.softLimit
-        .reverseSoftLimit(ElevatorPositions.MaxHeight.getValue())
-        .reverseSoftLimitEnabled(false)
-        .forwardSoftLimit(.1)
-        .forwardSoftLimitEnabled(false);
+        .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
+        .forwardSoftLimitEnabled(true);
 
         backElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
-                .inverted(true)
+                .inverted(false)
                 .smartCurrentLimit(40);
 
         backElevatorMotorConfig.closedLoop
@@ -90,14 +91,9 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .d(0)
                 .outputRange(-1, 1);
 
-        backElevatorMotorConfig.closedLoop
-                .p(0.001)
-                .d(0)
-                .outputRange(-1, 1);
-
         // front motor is follower
         frontElevatorMotorConfig
-                .inverted(true)
+                .inverted(false)
                 .smartCurrentLimit(40)
                 .idleMode(IdleMode.kBrake)
                 .follow(backElevatorMotor.getDeviceId());
@@ -106,6 +102,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
         frontElevatorMotor.configure(frontElevatorMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+
+        
     }
 
     public double getBackElevatorMotorEncoder() {
@@ -162,7 +160,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         throughBoreEncoder.setPosition(0);
     }
 
-    if(getFrontElevatorLimitSwitch() && backElevatorMotor.get() > 0){
+    if(getFrontElevatorLimitSwitch() && backElevatorMotor.get() < 0){
         backElevatorMotor.stopMotor();
     }
    }

@@ -21,7 +21,7 @@ public class ManualElevator extends Command {
 
     @Override
     public void execute() {
-        elevatorSubsystem.setElevatorSpeed(speed.getAsDouble());
+        elevatorSubsystem.setElevatorSpeed(-speed.getAsDouble());
     }
 
     @Override
