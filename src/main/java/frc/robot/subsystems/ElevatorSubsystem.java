@@ -1,15 +1,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
-
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkMaxAlternateEncoder;
-import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -47,7 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         CoralStation(0),
         MaxHeight(25.5),
         MinimumHeight(0);
-        //MAX = -1300
+
         private final double value;
 
         ElevatorPositions(double value) {
@@ -70,15 +65,15 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
         throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
-        
+
         backElevatorMotorConfig.alternateEncoder
-            .countsPerRevolution(8192)
-            .setSparkMaxDataPortConfig()
-            .inverted(true);
+                .countsPerRevolution(8192)
+                .setSparkMaxDataPortConfig()
+                .inverted(true);
 
         backElevatorMotorConfig.softLimit
-        .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
-        .forwardSoftLimitEnabled(true);
+                .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
+                .forwardSoftLimitEnabled(true);
 
         backElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
@@ -103,7 +98,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         frontElevatorMotor.configure(frontElevatorMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
-        
+    }
+
+    public double getBackElevatorSpeed(){
+        return backElevatorMotor.get();
     }
 
     public double getBackElevatorMotorEncoder() {
@@ -125,22 +123,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void pidSetPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
         targetPos = position.getValue() + manualOffset;
-        backElevatorMotorPID.setReference(MathUtil.clamp(targetPos, 0.0, ElevatorPositions.MaxHeight.getValue()), ControlType.kPosition);
+        backElevatorMotorPID.setReference(MathUtil.clamp(targetPos, 0.0, ElevatorPositions.MaxHeight.getValue()),
+                ControlType.kPosition);
     }
 
     public ElevatorPositions getElevatorTarget() {
         return targetElevatorPosition;
     }
 
-    public boolean getBackElevatorLimitSwitch(){
+    public boolean getBackElevatorLimitSwitch() {
         return backElevatorLimitSwitch.get();
     }
 
-    public boolean getFrontElevatorLimitSwitch(){
+    public boolean getFrontElevatorLimitSwitch() {
         return frontElevatorLimitSwitch.get();
     }
 
-    public double differenceInVelocity(){
+    public double differenceInVelocity() {
         return backElevatorMotor.getEncoder().getVelocity() - frontElevatorMotor.getEncoder().getVelocity();
     }
 
@@ -150,18 +149,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         return (getElevatorPosition() <= upperbound && getElevatorPosition() >= lowerbound);
     }
 
-    public void zeroElevatorPosition(){
+    public void zeroElevatorPosition() {
         backElevatorMotor.getEncoder().setPosition(0);
     }
 
-   @Override
-   public void periodic(){
-    if(getFrontElevatorLimitSwitch() && getElevatorPosition() != 0){
-        throughBoreEncoder.setPosition(0);
-    }
+    @Override
+    public void periodic() {
+        if (getFrontElevatorLimitSwitch() && getElevatorPosition() != 0) {
+            throughBoreEncoder.setPosition(0);
+        }
 
-    if(getFrontElevatorLimitSwitch() && backElevatorMotor.get() < 0){
-        backElevatorMotor.stopMotor();
+        else if (getFrontElevatorLimitSwitch() && backElevatorMotor.get() < 0) {
+            backElevatorMotor.stopMotor();
+        }
     }
-   }
 }

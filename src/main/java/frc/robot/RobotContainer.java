@@ -212,6 +212,7 @@ public class RobotContainer {
   }
 
   public void updateDashboard() {
+    SmartDashboard.putNumber("Back motor percent", elevatorSubsystem.getBackElevatorSpeed());
     SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
     SmartDashboard.putNumber("Front Elevator Position", elevatorSubsystem.getFrontElevatorMotorEncoder());
     SmartDashboard.putNumber("Back Elevator Position", elevatorSubsystem.getBackElevatorMotorEncoder());
