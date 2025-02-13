@@ -30,6 +30,6 @@ public class IntakeCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return coralSubsystem.getCoralSensor();
     }
 }
