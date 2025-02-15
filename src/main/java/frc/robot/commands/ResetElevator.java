@@ -3,41 +3,37 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ManualElevator extends Command {
+public class ResetElevator extends Command {
     private ElevatorSubsystem elevatorSubsystem;
-    private DoubleSupplier speed;
 
-    public ManualElevator(ElevatorSubsystem elevatorSubsystem, DoubleSupplier speed) {
+    public ResetElevator(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
-        this.speed = speed;
         addRequirements(elevatorSubsystem);
     }
 
     @Override
     public void initialize() {
+        elevatorSubsystem.setElevatorSpeed(-0.8);
     }
 
     @Override
     public void execute() {
-
-        if(elevatorSubsystem.getFrontElevatorLimitSwitch() && -speed.getAsDouble() < 0){
-            elevatorSubsystem.setElevatorSpeed(0);
-        }
-
-        else{
-            elevatorSubsystem.setElevatorSpeed(-speed.getAsDouble());
+        if(elevatorSubsystem.getBackElevatorLimitSwitch()){
+            elevatorSubsystem.setElevatorSpeed(-0.4);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
+        elevatorSubsystem.setElevatorSpeed(0);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return elevatorSubsystem.getFrontElevatorLimitSwitch();
     }
 
 }

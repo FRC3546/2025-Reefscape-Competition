@@ -32,6 +32,7 @@ import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.OuttakeCoral;
+import frc.robot.commands.ResetElevator;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.Stow;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -40,7 +41,8 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private CommandJoystick testJoystick = new CommandJoystick(1);
-  private CommandJoystick buttonBoard = new CommandJoystick(2);
+  private CommandJoystick testCoralJoystick = new CommandJoystick(2);
+  // private CommandJoystick buttonBoard = new CommandJoystick(2);
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
@@ -125,8 +127,10 @@ public class RobotContainer {
    */
 
   public RobotContainer() {
-    //elevatorSubsystem.zeroElevatorPosition();
-    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (testJoystick.getY()) / 1));
+    elevatorSubsystem.zeroElevatorPosition();
+    elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (testJoystick.getY()) / 0.5));
+    // coralSubsystem.setDefaultCommand(new ManualCoral(coralSubsystem, () -> -(testCoralJoystick.getY() / 0.01)));
+
     // coralSubsystem.setDefaultCommand(new ManualCoral(coralSubsystem, () ->
     // (testJoystick.getY()/4)));
     // Configure the trigger bindings
@@ -148,7 +152,23 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
-    testJoystick.button(7).onTrue(new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.Stow)));
+    testJoystick.button(7).onTrue(new ResetElevator(elevatorSubsystem));
+    testCoralJoystick.button(7).whileTrue(new OuttakeCoral(coralSubsystem, 0.5));
+
+    // testJoystick.button(1).onTrue(new ResetElevator(elevatorSubsystem));
+    // testJoystick.button(8).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.MinimumHeight)));
+    // testJoystick.button(10).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L2)));
+    // testJoystick.button(12).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.L3)));
+    // testJoystick.button(7).onTrue(new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.Stow)));
+    // testJoystick.button(9).onTrue(new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.CoralStation)));
+    // testJoystick.button(11).onTrue(new IntakeCoral(coralSubsystem, 0.7));
+    
+    // testJoystick.button(7).onTrue(new CoralStationIntake(coralSubsystem, elevatorSubsystem));
+    // testJoystick.button(9).onTrue(new InstantCommand(() -> elevatorSubsystem.setPIDPosition(ElevatorPositions.L4)));
+    // testJoystick.button(8).onTrue(new ResetElevator(elevatorSubsystem));
+    // testJoystick.button(11).onTrue(new ScoreCoral(coralSubsystem, elevatorSubsystem, 0.7));
+    // testJoystick.button(10).onTrue(new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.Stow)));
+
     // buttonBoard.button(L1Button).onTrue(new InstantCommand(() ->
     // elevatorSubsystem.pidSetPosition(ElevatorPositions.L1)));
     // buttonBoard.button(L2Button).onTrue(new InstantCommand(() ->
@@ -212,16 +232,23 @@ public class RobotContainer {
   }
 
   public void updateDashboard() {
+    SmartDashboard.putBoolean("coral score is true", coralSubsystem.pidWithinBounds(CoralPivotPositions.CoralStation.L4, 0.05, 1));
     SmartDashboard.putNumber("Back motor percent", elevatorSubsystem.getBackElevatorSpeed());
     SmartDashboard.putNumber("Coral Pivot Position", coralSubsystem.getPivotPosition());
     SmartDashboard.putNumber("Front Elevator Position", elevatorSubsystem.getFrontElevatorMotorEncoder());
     SmartDashboard.putNumber("Back Elevator Position", elevatorSubsystem.getBackElevatorMotorEncoder());
     SmartDashboard.putBoolean("is Front Limit Switch enabled", elevatorSubsystem.getFrontElevatorLimitSwitch());
     SmartDashboard.putBoolean("is Back Limit Switch enabled", elevatorSubsystem.getBackElevatorLimitSwitch());
-    SmartDashboard.putNumber("Elevator Position", elevatorSubsystem.getElevatorPosition());
+    SmartDashboard.putNumber("Elevator Position Enc", elevatorSubsystem.getElevatorPosition());
+    SmartDashboard.putNumber("Elevator Position Inch", elevatorSubsystem.encoderToInch());
     SmartDashboard.putNumber("Difference in velocity", elevatorSubsystem.differenceInVelocity());
     SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValue());
     SmartDashboard.putBoolean("coral break beam", coralSubsystem.getCoralSensor());
     // elevatorSubsystem.getElevatorPosition());
+  }
+
+  public void resetPIDControllers(){
+    elevatorSubsystem.resetPIDController();
+    coralSubsystem.resetPIDController();
   }
 }

@@ -17,7 +17,7 @@ public class ScoreCoral extends Command {
         targetPivotPosition = CoralPivotPositions.Stow;
         this.coralSubsystem = coralSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        this.speed = -(Math.abs(speed));
+        this.speed = (Math.abs(speed));
         addRequirements(coralSubsystem, elevatorSubsystem);
     }
 
@@ -60,6 +60,6 @@ public class ScoreCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return coralSubsystem.pidWithinBounds(targetPivotPosition, 0.05);
+        return coralSubsystem.pidWithinBounds(targetPivotPosition, 0.05, 1);
     }
 }

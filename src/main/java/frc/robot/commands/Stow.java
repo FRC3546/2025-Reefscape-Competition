@@ -19,7 +19,7 @@ public class Stow extends Command {
 
     @Override
     public void initialize() {
-        elevatorSubsystem.pidSetPosition(ElevatorPositions.Stow);
+        elevatorSubsystem.setPIDPosition(ElevatorPositions.Stow);
         coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
     }
 

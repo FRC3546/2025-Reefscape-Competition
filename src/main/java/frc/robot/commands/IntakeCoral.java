@@ -10,7 +10,7 @@ public class IntakeCoral extends Command {
 
     public IntakeCoral(CoralSubsystem coralSubsystem, double speed) {
         this.coralSubsystem = coralSubsystem;
-        this.speed = Math.abs(speed);
+        this.speed = -Math.abs(speed);
         addRequirements(coralSubsystem);
     }
 

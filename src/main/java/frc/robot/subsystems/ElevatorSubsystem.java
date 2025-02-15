@@ -30,18 +30,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorPositions targetElevatorPosition;
 
     public enum ElevatorPositions {
-        L1(0),
-        L2(0),
-        L3(0),
-        L4(0),
-        Barge(0),
-        AlgaeReefHigh(0),
-        AlgaeReefLow(0),
-        Processor(0),
-        Stow(0),
-        CoralStation(0),
-        MaxHeight(25.5),
-        MinimumHeight(0);
+        L1(7.63),
+        L2(12),
+        L3(18),
+        L4(25.5),
+        Barge(7.63),
+        AlgaeReefHigh(7.63),
+        AlgaeReefLow(7.63),
+        Processor(7.63),
+        Stow(7.63),
+        CoralStation(7.6323),
+        MaxHeight(70),
+        MinimumHeight(7.63);
 
         private final double value;
 
@@ -50,7 +50,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         public double getValue() {
-            return value;
+            // return .000130994x^{4}-.0067331x^{3}+.118148x^{2}+2.30416x+8;
+            return 
+                0.000130884*Math.pow(value, 4) 
+                -0.0067331*Math.pow(value, 3) 
+                +0.118148*Math.pow(value, 2) 
+                +2.30416*value 
+                +8;
         }
     }
 
@@ -73,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         backElevatorMotorConfig.softLimit
                 .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
-                .forwardSoftLimitEnabled(true);
+                .forwardSoftLimitEnabled(false);
 
         backElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
@@ -82,7 +88,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         backElevatorMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-                .p(1)
+                .p(16)
                 .d(0)
                 .outputRange(-1, 1);
 
@@ -116,15 +122,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         return throughBoreEncoder.getPosition();
     }
 
+    public double getElevatorVelocity(){
+        return throughBoreEncoder.getVelocity();
+    }
+
     public void setElevatorSpeed(double speed) {
         backElevatorMotor.set(speed);
     }
 
-    public void pidSetPosition(ElevatorPositions position) {
+    public void setPIDPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
-        targetPos = position.getValue() + manualOffset;
-        backElevatorMotorPID.setReference(MathUtil.clamp(targetPos, 0.0, ElevatorPositions.MaxHeight.getValue()),
-                ControlType.kPosition);
+        backElevatorMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 
     public ElevatorPositions getElevatorTarget() {
@@ -143,24 +151,44 @@ public class ElevatorSubsystem extends SubsystemBase {
         return backElevatorMotor.getEncoder().getVelocity() - frontElevatorMotor.getEncoder().getVelocity();
     }
 
-    public boolean pidWithinBounds(ElevatorPositions position, double tolerance) {
-        double upperbound = position.getValue() + tolerance;
-        double lowerbound = position.getValue() - tolerance;
-        return (getElevatorPosition() <= upperbound && getElevatorPosition() >= lowerbound);
+    public boolean pidWithinBounds(ElevatorPositions position, double positionTolerance, double velocityTolerance) {
+        double upperbound = position.getValue() + positionTolerance;
+        double lowerbound = position.getValue() - positionTolerance;
+        boolean withinPosition = getElevatorPosition() <= upperbound && getElevatorPosition() >= lowerbound;
+        boolean withinVelocity = getElevatorVelocity() <= Math.abs(velocityTolerance) && getElevatorVelocity() >= -Math.abs(velocityTolerance);
+        return (withinPosition && withinVelocity);
     }
 
     public void zeroElevatorPosition() {
         backElevatorMotor.getEncoder().setPosition(0);
     }
 
+    public void resetPIDController(){
+        backElevatorMotor.set(0);
+        frontElevatorMotor.set(0);
+    }
+    
+    public double encoderToInch(){
+        // return 2.98857 * getElevatorPosition() + 7.62804;
+        return 
+            0.000130884*Math.pow(getElevatorPosition(), 4) 
+            -0.0067331*Math.pow(getElevatorPosition(), 3) 
+            +0.118148*Math.pow(getElevatorPosition(), 2) 
+            +2.30416*getElevatorPosition() 
+            +8;
+    }
+
     @Override
     public void periodic() {
+
+        // if (getFrontElevatorLimitSwitch() && backElevatorMotor.get() < 0) {
+        //     backElevatorMotor.stopMotor();
+        // }
+
         if (getFrontElevatorLimitSwitch() && getElevatorPosition() != 0) {
             throughBoreEncoder.setPosition(0);
         }
 
-        else if (getFrontElevatorLimitSwitch() && backElevatorMotor.get() < 0) {
-            backElevatorMotor.stopMotor();
-        }
+        
     }
 }

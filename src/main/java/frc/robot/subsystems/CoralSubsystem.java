@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -27,13 +28,13 @@ public class CoralSubsystem extends SubsystemBase {
 
     public enum CoralPivotPositions {
         // increases moving towards the front
-        L1(0.2),
+        L1(0),
         L2(0),
         L3(0),
-        L4(0),
-        Stow(0.94),
-        CoralStation(0),
-        MinimumAngle(.14),
+        L4(0.8412),
+        Stow(0.53),
+        CoralStation(.33),
+        MinimumAngle(0),
         MaximumAngle(0);
 
         private final double value;
@@ -63,13 +64,17 @@ public class CoralSubsystem extends SubsystemBase {
 
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .p(4)
-                .d(0)
-                .outputRange(-.5, .5);
+                .p(7.5)
+                .i(0.0001)
+                .d(5.5)
+                .maxOutput(0.5)
+                .minOutput(-0.5);
+
+        
         pivotMotorConfig
                 .inverted(true)
                 .smartCurrentLimit(40)
-                .idleMode(IdleMode.kBrake);
+                .idleMode(IdleMode.kCoast);
         
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -107,9 +112,23 @@ public class CoralSubsystem extends SubsystemBase {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 
-    public boolean pidWithinBounds(CoralPivotPositions position, double tolerance) {
-        double upperbound = position.getValue() + tolerance;
-        double lowerbound = position.getValue() - tolerance;
-        return (getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound);
+    // public boolean pidWithinBounds(CoralPivotPositions position, double positionTolerance, double velocityTolerance) {
+    //     double upperbound = position.getValue() + positionTolerance;
+    //     double lowerbound = position.getValue() - positionTolerance;
+    //     boolean withinPosition = getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound;
+    //     boolean withinVelocity = getPivotVelocity() <= Math.abs(velocityTolerance) && getPivotVelocity() >= -Math.abs(velocityTolerance);
+    //     return (withinPosition && withinVelocity);
+    // }
+
+    public boolean pidWithinBounds(CoralPivotPositions position, double positionTolerance, double velocityTolerance) {
+        double upperbound = position.getValue() + positionTolerance;
+        double lowerbound = position.getValue() - positionTolerance;
+        boolean withinPosition = getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound;
+        boolean withinVelocity = getPivotVelocity() <= Math.abs(velocityTolerance) && getPivotVelocity() >= -Math.abs(velocityTolerance);
+        return (withinPosition && withinVelocity);
+    }
+
+    public void resetPIDController(){
+        pivotMotor.set(0);
     }
 }

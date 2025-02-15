@@ -14,9 +14,9 @@ public class CoralStationIntake extends SequentialCommandGroup {
 
         addCommands(
                 new ParallelDeadlineGroup(
-                        new InstantCommand(() -> elevatorSubsystem.pidSetPosition(ElevatorPositions.CoralStation)),
+                        new InstantCommand(() -> elevatorSubsystem.setPIDPosition(ElevatorPositions.CoralStation)),
                         new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.CoralStation))),
-                new IntakeCoral(coralSubsystem, 0.3),
+                new IntakeCoral(coralSubsystem, 0.7),
                 new Stow(coralSubsystem, elevatorSubsystem));
     }
 
