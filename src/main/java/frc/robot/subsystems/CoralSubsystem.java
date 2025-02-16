@@ -28,10 +28,10 @@ public class CoralSubsystem extends SubsystemBase {
 
     public enum CoralPivotPositions {
         // increases moving towards the front
-        L1(0),
-        L2(0),
-        L3(0),
-        L4(0.8412),
+        L1(0.637),
+        L2(0.8116),
+        L3(0.8116),
+        L4(0.83),
         Stow(0.53),
         CoralStation(.33),
         MinimumAngle(0),
@@ -62,19 +62,22 @@ public class CoralSubsystem extends SubsystemBase {
             .inverted(true)
             .idleMode(IdleMode.kBrake);
 
+        intakeMotorConfig.limitSwitch
+            .forwardLimitSwitchEnabled(false);
+
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .p(7.5)
-                .i(0.0001)
-                .d(5.5)
-                .maxOutput(0.5)
-                .minOutput(-0.5);
+                .p(7)
+                .i(0)
+                .d(3)
+                .maxOutput(0.75)
+                .minOutput(-0.75);
 
         
         pivotMotorConfig
                 .inverted(true)
                 .smartCurrentLimit(40)
-                .idleMode(IdleMode.kCoast);
+                .idleMode(IdleMode.kBrake);
         
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

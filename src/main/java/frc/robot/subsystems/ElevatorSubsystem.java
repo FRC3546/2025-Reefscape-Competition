@@ -30,18 +30,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorPositions targetElevatorPosition;
 
     public enum ElevatorPositions {
-        L1(7.63),
-        L2(12),
-        L3(18),
-        L4(25.5),
-        Barge(7.63),
-        AlgaeReefHigh(7.63),
-        AlgaeReefLow(7.63),
-        Processor(7.63),
-        Stow(7.63),
-        CoralStation(7.6323),
-        MaxHeight(70),
-        MinimumHeight(7.63);
+        L1(10),
+        L2(40),
+        L3(55.5),
+        L4(85.495417),
+        Barge(8),
+        AlgaeReefHigh(8),
+        AlgaeReefLow(8),
+        Processor(8),
+        Stow(13),
+        CoralStation(32),
+        MaxHeight(90),
+        MinimumHeight(8);
 
         private final double value;
 
@@ -52,11 +52,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         public double getValue() {
             // return .000130994x^{4}-.0067331x^{3}+.118148x^{2}+2.30416x+8;
             return 
-                0.000130884*Math.pow(value, 4) 
-                -0.0067331*Math.pow(value, 3) 
-                +0.118148*Math.pow(value, 2) 
-                +2.30416*value 
-                +8;
+            0.000000723783*Math.pow(value, 4) 
+            -0.000158195*Math.pow(value, 3) 
+                +0.0113236*Math.pow(value, 2) 
+                +0.0272627*value 
+                +0;
         }
     }
 
@@ -79,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         backElevatorMotorConfig.softLimit
                 .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
-                .forwardSoftLimitEnabled(false);
+                .forwardSoftLimitEnabled(true);
 
         backElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
@@ -176,6 +176,15 @@ public class ElevatorSubsystem extends SubsystemBase {
             +0.118148*Math.pow(getElevatorPosition(), 2) 
             +2.30416*getElevatorPosition() 
             +8;
+    }
+
+    public double inchToEncoder(){
+        return 
+            0.000000723783*Math.pow(getElevatorPosition(), 4) 
+            -0.000158195*Math.pow(getElevatorPosition(), 3) 
+                +0.0113236*Math.pow(getElevatorPosition(), 2) 
+                +0.0272627*getElevatorPosition() 
+                +0;
     }
 
     @Override

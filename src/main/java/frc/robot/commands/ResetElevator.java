@@ -5,18 +5,22 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
 
 public class ResetElevator extends Command {
     private ElevatorSubsystem elevatorSubsystem;
+    private CoralSubsystem coralSubsystem;
 
-    public ResetElevator(ElevatorSubsystem elevatorSubsystem) {
+    public ResetElevator(ElevatorSubsystem elevatorSubsystem,CoralSubsystem coralSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
-        addRequirements(elevatorSubsystem);
+        this.coralSubsystem = coralSubsystem;
+        addRequirements(coralSubsystem);
     }
 
     @Override
     public void initialize() {
         elevatorSubsystem.setElevatorSpeed(-0.8);
+        coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
     }
 
     @Override
