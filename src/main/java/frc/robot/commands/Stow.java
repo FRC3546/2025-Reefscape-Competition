@@ -25,11 +25,17 @@ public class Stow extends Command {
 
     @Override
     public void execute() {
+        if(!coralSubsystem.getCoralSensor()){
+            coralSubsystem.setIntakeMotorSpeed(-0.3);
+        }
+        else{
+            coralSubsystem.stopIntakeMotor();
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-
+        coralSubsystem.stopIntakeMotor();
     }
 
     @Override

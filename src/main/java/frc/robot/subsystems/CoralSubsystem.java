@@ -32,7 +32,7 @@ public class CoralSubsystem extends SubsystemBase {
         L2(0.8116),
         L3(0.8116),
         L4(0.83),
-        Stow(0.53),
+        Stow(0.58),
         CoralStation(.33),
         MinimumAngle(0),
         MaximumAngle(0);

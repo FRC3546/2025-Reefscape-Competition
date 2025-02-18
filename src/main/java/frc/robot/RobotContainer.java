@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Vision;
+
 import java.io.File;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,11 +47,11 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private CommandJoystick testJoystick = new CommandJoystick(1);
+  // private CommandJoystick testJoystick = new CommandJoystick(1);
   // private CommandJoystick testCoralJoystick = new CommandJoystick(2);
-  private CommandJoystick buttonBoard = new CommandJoystick(2);
-  final CommandXboxController driverXbox = new CommandXboxController(0);
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  private CommandJoystick buttonBoard = new CommandJoystick(1);
+  final CommandXboxController driverController = new CommandXboxController(0);
+  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
 
   private int L1Button = 9;
@@ -64,16 +66,16 @@ public class RobotContainer {
   private int coralIntakeButton = 6;
   private int fireButton = 7;
   private int coralAlgaeSelector = 3;
-  private int zeroButton = 4;
+  private int stowButton = 4;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
    * by angular velocity.
    */
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> driverXbox.getLeftY() * 1,
-      () -> driverXbox.getLeftX() * -1)
-      .withControllerRotationAxis(() -> -driverXbox.getRawAxis(2))
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+      () -> driverController.getLeftY() * 1,
+      () -> driverController.getLeftX() * -1)
+      .withControllerRotationAxis(() -> -driverController.getRawAxis(2))
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(1.2)
       .allianceRelativeControl(true);
@@ -82,8 +84,8 @@ public class RobotContainer {
    * Clone's the angular velocity input stream and converts it to a fieldRelative
    * input stream.
    */
-  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
-      driverXbox::getRightY)
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverController::getRightX,
+      driverController::getRightY)
       .headingWhile(true);
 
   // Applies deadbands and inverts controls because joysticks
@@ -91,42 +93,42 @@ public class RobotContainer {
   // controls are front-left positive
   // left stick controls translation
   // right stick controls the desired angle NOT angular rotation
-  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
   // left stick controls translation
   // right stick controls the angular velocity of the robot
-  Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
 
-  Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+  Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
 
-  SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> -driverXbox.getLeftY(),
-      () -> -driverXbox.getLeftX())
-      .withControllerRotationAxis(() -> driverXbox.getRawAxis(2))
+  SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+      () -> -driverController.getLeftY(),
+      () -> -driverController.getLeftX())
+      .withControllerRotationAxis(() -> driverController.getRawAxis(2))
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8)
       .allianceRelativeControl(true);
   // Derive the heading axis with math!
   SwerveInputStream driveDirectAngleSim = driveAngularVelocitySim.copy()
       .withControllerHeadingAxis(() -> Math.sin(
-          driverXbox.getRawAxis(
+          driverController.getRawAxis(
               2) * Math.PI)
           * (Math.PI * 2),
           () -> Math.cos(
-              driverXbox.getRawAxis(
+              driverController.getRawAxis(
                   2) * Math.PI)
               *
               (Math.PI * 2))
       .headingWhile(true);
 
-  Command driveFieldOrientedDirectAngleSim = drivebase.driveFieldOriented(driveDirectAngleSim);
+  Command driveFieldOrientedDirectAngleSim = swerveSubsystem.driveFieldOriented(driveDirectAngleSim);
 
-  Command driveFieldOrientedAnglularVelocitySim = drivebase.driveFieldOriented(driveAngularVelocitySim);
+  Command driveFieldOrientedAnglularVelocitySim = swerveSubsystem.driveFieldOriented(driveAngularVelocitySim);
 
-  Command driveSetpointGenSim = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
+  Command driveSetpointGenSim = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -134,6 +136,12 @@ public class RobotContainer {
 
   public RobotContainer() {
     elevatorSubsystem.zeroElevatorPosition();
+    NamedCommands.registerCommand("Elevator to L4", new ScoringPosition(coralSubsystem, CoralPivotPositions.L4, elevatorSubsystem, ElevatorPositions.L4));
+    NamedCommands.registerCommand("Elevator to L3", new ScoringPosition(coralSubsystem, CoralPivotPositions.L3, elevatorSubsystem, ElevatorPositions.L3));
+    NamedCommands.registerCommand("Elevator to L2", new ScoringPosition(coralSubsystem, CoralPivotPositions.L2, elevatorSubsystem, ElevatorPositions.L2));
+    NamedCommands.registerCommand("Elevator to L1", new ScoringPosition(coralSubsystem, CoralPivotPositions.L1, elevatorSubsystem, ElevatorPositions.L1));
+    NamedCommands.registerCommand("Stow", new Stow(coralSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralSubsystem, 0.75).withTimeout(0.5));
     // elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (testJoystick.getY()) / 0.5));
     // climberSubsystem.setDefaultCommand(new ManualClimb(climberSubsystem, () -> testJoystick.getY()));
 
@@ -164,43 +172,47 @@ public class RobotContainer {
     buttonBoard.button(L2Button).onTrue(new ScoringPosition(coralSubsystem, CoralPivotPositions.L2, elevatorSubsystem, ElevatorPositions.L2));
     buttonBoard.button(L1Button).onTrue(new ScoringPosition(coralSubsystem, CoralPivotPositions.L1, elevatorSubsystem, ElevatorPositions.L1));
 
-    buttonBoard.button(rightOffsetButton).whileTrue(new ManualCoralAlignment(drivebase, -0.4));
-    buttonBoard.button(leftOffsetButton).whileTrue(new ManualCoralAlignment(drivebase, 0.4));
+    buttonBoard.button(rightOffsetButton).whileTrue(new ManualCoralAlignment(swerveSubsystem, -0.4));
+    buttonBoard.button(leftOffsetButton).whileTrue(new ManualCoralAlignment(swerveSubsystem, 0.4));
     buttonBoard.button(fireButton).onTrue(new OuttakeCoral(coralSubsystem, 0.75));
     buttonBoard.button(coralIntakeButton).onTrue(new CoralStationIntake(coralSubsystem, elevatorSubsystem));
-    buttonBoard.button(zeroButton).onTrue(new ResetElevator(elevatorSubsystem, coralSubsystem));
+    buttonBoard.button(stowButton).onTrue(new Stow(coralSubsystem, elevatorSubsystem)).debounce(0.3).whileTrue(new ResetElevator(elevatorSubsystem, coralSubsystem));
+
+    driverController.button(2).onTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro()));
+    // driverController.button(2).onTrue(new InstantCommand(() -> swerveSubsystem.driveToPose(new Pose2d())));
+
 
     
 
     // swerve logic
     // (Condition) ? Return-On-True : Return-on-False
-    drivebase.setDefaultCommand(
+    swerveSubsystem.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedAnglularVelocitySim);
 
     if (Robot.isSimulation()) {
-      driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-      driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
+      driverController.start().onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+      driverController.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
 
     }
     if (DriverStation.isTest()) {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+      swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
 
-      driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
-      driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.back().whileTrue(drivebase.centerModulesCommand());
-      driverXbox.leftBumper().onTrue(Commands.none());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      driverController.x().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
+      driverController.y().whileTrue(swerveSubsystem.driveToDistanceCommand(1.0, 0.2));
+      driverController.start().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
+      driverController.back().whileTrue(swerveSubsystem.centerModulesCommand());
+      driverController.leftBumper().onTrue(Commands.none());
+      driverController.rightBumper().onTrue(Commands.none());
     } else {
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverXbox.b().whileTrue(
-          drivebase.driveToPose(
+      driverController.a().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
+      driverController.x().onTrue(Commands.runOnce(swerveSubsystem::addFakeVisionReading));
+      driverController.b().whileTrue(
+          swerveSubsystem.driveToPose(
               new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0))));
-      driverXbox.start().whileTrue(Commands.none());
-      driverXbox.back().whileTrue(Commands.none());
-      driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      driverController.start().whileTrue(Commands.none());
+      driverController.back().whileTrue(Commands.none());
+      driverController.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
+      driverController.rightBumper().onTrue(Commands.none());
     }
 
   }
@@ -212,11 +224,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("4 Coral Red Barge");
+    return swerveSubsystem.getAutonomousCommand("1 Coral Middle");
   }
 
   public void setMotorBrake(boolean brake) {
-    drivebase.setMotorBrake(brake);
+    swerveSubsystem.setMotorBrake(brake);
   }
 
   public void updateDashboard() {
@@ -236,7 +248,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("left climber position", climberSubsystem.leftClimbMotorPosition());
     SmartDashboard.putNumber("right climber position", climberSubsystem.rightClimbMotorPosition());
 
-    // elevatorSubsystem.getElevatorPosition());
+    
   }
 
   public void resetPIDControllers(){
