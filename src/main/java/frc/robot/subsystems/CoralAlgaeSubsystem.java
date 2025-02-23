@@ -15,7 +15,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLimitSwitch;
 
-public class CoralSubsystem extends SubsystemBase {
+public class CoralAlgaeSubsystem extends SubsystemBase {
 
     private SparkLimitSwitch coralSensor;
     private SparkMax pivotMotor;
@@ -25,18 +25,20 @@ public class CoralSubsystem extends SubsystemBase {
     private SparkClosedLoopController pivotMotorPID;
     private SparkMaxConfig pivotMotorConfig;
     private SparkMaxConfig intakeMotorConfig;
+    public boolean coralIntaking = true;
 
     public enum CoralPivotPositions {
         // increases moving towards the front
-        L1(0.637),
-        L2(0.8116),
-        L3(0.8116),
-        L4(0.83),
-        Stow(0.58),
-        CoralStation(.33),
-        MinimumAngle(0),
-        MaximumAngle(0);
-
+        L1(0.537),
+        L2(0.7375),
+        L3(0.7375),
+        L4(0.775),
+        AlgaeReef(0.5),
+        Barge(0.306),
+        Stow(0.306),
+        CoralStation(.23),
+        MinimumAngle(.5),
+        MaximumAngle(.5);
         private final double value;
 
         CoralPivotPositions(double value) {
@@ -49,7 +51,7 @@ public class CoralSubsystem extends SubsystemBase {
 
     }
 
-    public CoralSubsystem() {
+    public CoralAlgaeSubsystem() {
         intakeMotor = new SparkMax(48, MotorType.kBrushed);
         pivotMotor = new SparkMax(47, MotorType.kBrushless);
         coralSensor = intakeMotor.getForwardLimitSwitch();
@@ -133,5 +135,13 @@ public class CoralSubsystem extends SubsystemBase {
 
     public void resetPIDController(){
         pivotMotor.set(0);
+    }
+
+    public void setCoralIntakeMode(boolean coralIntake){
+        coralIntaking = coralIntake;
+    }
+
+    public double getAlgaeCurrent(){
+        return intakeMotor.getOutputCurrent();
     }
 }

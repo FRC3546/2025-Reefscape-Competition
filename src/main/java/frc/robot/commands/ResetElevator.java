@@ -3,15 +3,15 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
+import frc.robot.subsystems.CoralAlgaeSubsystem.CoralPivotPositions;
 
 public class ResetElevator extends Command {
     private ElevatorSubsystem elevatorSubsystem;
-    private CoralSubsystem coralSubsystem;
+    private CoralAlgaeSubsystem coralSubsystem;
 
-    public ResetElevator(ElevatorSubsystem elevatorSubsystem,CoralSubsystem coralSubsystem) {
+    public ResetElevator(ElevatorSubsystem elevatorSubsystem,CoralAlgaeSubsystem coralSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
         this.coralSubsystem = coralSubsystem;
         addRequirements(coralSubsystem);

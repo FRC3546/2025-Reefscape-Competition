@@ -30,16 +30,20 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.reefAlignmentConstants;
+import frc.robot.Constants.reefScoreLocation;
 import frc.robot.subsystems.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
@@ -65,7 +69,8 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * AprilTag field layout.
    */
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
+      .loadField(AprilTagFields.k2025ReefscapeAndyMark);
   /**
    * Enable vision odometry updates while driving.
    */
@@ -189,11 +194,10 @@ public class SwerveSubsystem extends SubsystemBase {
               // drive trains
 
               // Translation PID constants
-              new PIDConstants(5.4, 0.0, 0.01),
-              
+              new PIDConstants(3.5, 0.0, 0.0),
+
               // Rotation PID constants
-              new PIDConstants(5.4, 0.0, 0.0)
-          ),
+              new PIDConstants(5, 0.0, 0.0)),
           config,
           // The robot configuration
           () -> {
@@ -264,8 +268,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
-        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+        1, 0.5,
+        Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
@@ -327,6 +331,68 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     return Commands.none();
 
+  }
+
+  public Pose2d closestAprilTag(Pose2d robotPose) {
+    // Use the robot pose and return the closest AprilTag on a REEF
+    List<Integer> tagIDs = List.of(17, 18, 19, 20, 21, 22, 6, 7, 8, 9, 10, 11);
+
+    double minDistance = Double.MAX_VALUE;
+    Pose2d closestTagPose = new Pose2d();
+
+    for (int tagID : tagIDs) {
+      var tagPoseOptional = aprilTagFieldLayout.getTagPose(tagID);
+      var tagPose = tagPoseOptional.get();
+      Pose2d tagPose2d = new Pose2d(tagPose.getX(), tagPose.getY(), new Rotation2d(tagPose.getRotation().getZ()));
+      double distance = robotPose.getTranslation().getDistance(tagPose2d.getTranslation());
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestTagPose = tagPose2d;
+      }
+    }
+
+    return closestTagPose;
+  }
+
+  public Command autoAlign(reefScoreLocation options) {
+
+    Pose2d closestTagPose = closestAprilTag(getPose());
+    SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+    SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+
+    double x1 = closestTagPose.getX();
+    double y1 = closestTagPose.getY();
+    double z1 = closestTagPose.getRotation().getRadians();
+
+    double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
+    double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
+    double translatedRot = z1 - Math.PI;
+    switch (options) {
+      case LEFT:
+        translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+            * Math.cos(z1 - Math.PI / 2);
+        translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+            * Math.sin(z1 - Math.PI / 2);
+        break;
+
+      case RIGHT:
+        translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+            * Math.cos(z1 + Math.PI / 2);
+        translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+            * Math.sin(z1 + Math.PI / 2);
+        break;
+
+      case ALGAE:
+        translatedX += Math.cos(z1 + Math.PI / 2);
+        translatedY += Math.sin(z1 + Math.PI / 2);
+        break;
+    }
+
+    SmartDashboard.putNumber("Translated X", translatedX);
+    SmartDashboard.putNumber("Translated Y", translatedY);
+
+    return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
   }
 
   /**

@@ -1,36 +1,35 @@
-package frc.robot.commands;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.commands.CoralAlgaeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralAlgaeSubsystem;
 
-public class ManualCoral extends Command {
-    private CoralAlgaeSubsystem coralSubsystem;
-    private DoubleSupplier speed;
+public class IntakeCoral extends Command {
 
-    public ManualCoral(CoralAlgaeSubsystem coralSubsystem, DoubleSupplier speed) {
+    CoralAlgaeSubsystem coralSubsystem;
+    double speed;
+
+    public IntakeCoral(CoralAlgaeSubsystem coralSubsystem, double speed) {
         this.coralSubsystem = coralSubsystem;
-        this.speed = speed;
+        this.speed = -Math.abs(speed);
         addRequirements(coralSubsystem);
     }
 
     @Override
     public void initialize() {
+        coralSubsystem.setIntakeMotorSpeed(speed);
     }
 
     @Override
     public void execute() {
-        coralSubsystem.setPivotMotorSpeed(speed.getAsDouble());
     }
 
     @Override
     public void end(boolean interrupted) {
+        coralSubsystem.stopIntakeMotor();
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return coralSubsystem.getCoralSensor();
     }
-
 }

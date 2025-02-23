@@ -1,19 +1,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
+import frc.robot.subsystems.CoralAlgaeSubsystem.CoralPivotPositions;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 
 public class ScoringPosition extends Command {
 
-    CoralSubsystem coralSubsystem;
+    CoralAlgaeSubsystem coralSubsystem;
     CoralPivotPositions coralPivotPositions;
     ElevatorSubsystem elevatorSubsystem;
     ElevatorPositions elevatorPosition;
 
-    public ScoringPosition(CoralSubsystem coralSubsystem, CoralPivotPositions coralPivotPositions, ElevatorSubsystem elevatorSubsystem, ElevatorPositions elevatorPosition) {
+    public ScoringPosition(CoralAlgaeSubsystem coralSubsystem, CoralPivotPositions coralPivotPositions, ElevatorSubsystem elevatorSubsystem, ElevatorPositions elevatorPosition) {
         this.coralSubsystem = coralSubsystem;
         this.coralPivotPositions = coralPivotPositions;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -42,6 +42,12 @@ public class ScoringPosition extends Command {
         //         coralSubsystem.setPIDPosition(CoralPivotPositions.L1);
         //     default:
         //         coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
+        // }
+        // try {
+        //     wait(1000);
+        // } catch (InterruptedException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
         // }
         coralSubsystem.setPIDPosition(coralPivotPositions);
     }

@@ -33,14 +33,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         L1(10),
         L2(40),
         L3(55.5),
-        L4(85.495417),
-        Barge(8),
-        AlgaeReefHigh(8),
-        AlgaeReefLow(8),
-        Processor(8),
+        L4(90.495417),
+        Barge(90.495417),
+        AlgaeReefHigh(45.5),
+        AlgaeReefLow(30),
+        Processor(20),
         Stow(32),
         CoralStation(32),
-        MaxHeight(90),
+        MaxHeight(92),
         MinimumHeight(8);
 
         private final double value;

@@ -1,16 +1,16 @@
-package frc.robot.commands;
+package frc.robot.commands.CoralAlgaeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.CoralAlgaeSubsystem;
 
-public class IntakeCoral extends Command {
+public class IntakeAlgae extends Command {
 
-    CoralSubsystem coralSubsystem;
+    CoralAlgaeSubsystem coralSubsystem;
     double speed;
 
-    public IntakeCoral(CoralSubsystem coralSubsystem, double speed) {
+    public IntakeAlgae(CoralAlgaeSubsystem coralSubsystem, double speed) {
         this.coralSubsystem = coralSubsystem;
-        this.speed = -Math.abs(speed);
+        this.speed = (Math.abs(speed));
         addRequirements(coralSubsystem);
     }
 
@@ -30,6 +30,6 @@ public class IntakeCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return coralSubsystem.getCoralSensor();
+        return (coralSubsystem.getAlgaeCurrent() > 10) && (coralSubsystem.getAlgaeCurrent() < 20);
     }
 }

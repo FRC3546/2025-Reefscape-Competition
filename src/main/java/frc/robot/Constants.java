@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import swervelib.math.Matter;
 
 /**
@@ -50,4 +51,17 @@ public final class Constants {
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT = 6;
   }
+
+  public static class reefAlignmentConstants{
+    public static final double reefSpacing = 0.1643126;
+    public static final double robotWidth = Units.inchesToMeters(37.25 + 5);
+    public static final double coralScoreOffset = Units.inchesToMeters(3.5);
+  }
+
+  public enum reefScoreLocation{
+    LEFT,
+    RIGHT,
+    ALGAE
+  }
+
 }

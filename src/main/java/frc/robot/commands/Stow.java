@@ -1,17 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.CoralSubsystem.CoralPivotPositions;
+import frc.robot.subsystems.CoralAlgaeSubsystem.CoralPivotPositions;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 
 public class Stow extends Command {
 
-    CoralSubsystem coralSubsystem;
+    CoralAlgaeSubsystem coralSubsystem;
     ElevatorSubsystem elevatorSubsystem;
 
-    public Stow(CoralSubsystem coralSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public Stow(CoralAlgaeSubsystem coralSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.coralSubsystem = coralSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         addRequirements(coralSubsystem, elevatorSubsystem);

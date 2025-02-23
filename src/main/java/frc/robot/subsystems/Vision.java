@@ -8,6 +8,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,7 +22,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import java.awt.Desktop;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class Vision {
    * April Tag Field Layout of the year.
    */
   public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(
-      AprilTagFields.k2025ReefscapeAndyMark);
+      AprilTagFields.k2025ReefscapeWelded);
   /**
    * Ambiguity defined as a value between (0,1). Used in
    * {@link Vision#filterPose}.
@@ -305,7 +308,7 @@ public class Vision {
   /**
    * Camera Enum to select each camera
    */
-  enum Cameras {
+  public enum Cameras {
     /**
      * Left Camera
      */
@@ -314,16 +317,16 @@ public class Vision {
         new Translation3d(Units.inchesToMeters(12.691),
             Units.inchesToMeters(3.505),
             Units.inchesToMeters(16.75)),
-        VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+        VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
     /**
      * Right Camera
      */
-    BACK_CAMERA("BACK_CAM",
-        new Rotation3d(0, Math.toRadians(20), Math.toRadians(0)),
-        new Translation3d(Units.inchesToMeters(-8.898),
-            Units.inchesToMeters(3.5),
-            Units.inchesToMeters(36.259)),
-        VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+    // BACK_CAMERA("BACK_CAM",
+    //     new Rotation3d(0, Math.toRadians(20), Math.toRadians(0)),
+    //     new Translation3d(Units.inchesToMeters(-8.898),
+    //         Units.inchesToMeters(3.5),
+    //         Units.inchesToMeters(36.259)),
+    //     VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
     /**
      * Latency alert to use when high latency is detected.
