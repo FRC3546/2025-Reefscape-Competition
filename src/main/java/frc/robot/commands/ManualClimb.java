@@ -4,7 +4,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ManualClimb extends Command {
     private ClimberSubsystem climberSubsystem;
@@ -27,7 +26,7 @@ public class ManualClimb extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        climberSubsystem.stopClimberMotor();
+        climberSubsystem.setClimberSpeed(0);
     }
 
     @Override

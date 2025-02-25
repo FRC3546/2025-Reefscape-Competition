@@ -12,12 +12,10 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    private double targetPos;
     public double manualOffset = 0;
     private DigitalInput frontElevatorLimitSwitch;
     private DigitalInput backElevatorLimitSwitch;
@@ -31,15 +29,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public enum ElevatorPositions {
         L1(10),
-        L2(40),
-        L3(55.5),
+        L2(41),
+        L3(60),
         L4(90.495417),
         Barge(90.495417),
         AlgaeReefHigh(45.5),
         AlgaeReefLow(30),
         Processor(20),
         Stow(32),
-        CoralStation(32),
+        CoralStation(34),
         MaxHeight(92),
         MinimumHeight(8);
 

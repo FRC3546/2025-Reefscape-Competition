@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
-
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -34,7 +32,7 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         L3(0.7375),
         L4(0.775),
         AlgaeReef(0.5),
-        Barge(0.306),
+        Barge(0.4),
         Stow(0.306),
         CoralStation(.23),
         MinimumAngle(.5),

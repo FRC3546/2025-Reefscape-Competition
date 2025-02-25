@@ -21,7 +21,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,7 +28,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -268,7 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        1, 0.5,
+        1.5, 0.25,
         Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -335,9 +333,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d closestAprilTag(Pose2d robotPose) {
     // Use the robot pose and return the closest AprilTag on a REEF
-    List<Integer> tagIDs = List.of(17, 18, 19, 20, 21, 22, 6, 7, 8, 9, 10, 11);
+    List<Integer> tagIDs = List.of( 17, 18, 19, 20, 21, 22, 6, 7, 8, 9, 10, 11);
 
     double minDistance = Double.MAX_VALUE;
+    int closestTagID = 0;
     Pose2d closestTagPose = new Pose2d();
 
     for (int tagID : tagIDs) {
@@ -349,8 +348,13 @@ public class SwerveSubsystem extends SubsystemBase {
       if (distance < minDistance) {
         minDistance = distance;
         closestTagPose = tagPose2d;
+        closestTagID = tagID;
       }
     }
+
+    // if (closestTagID == 1) {
+    //   closestTagPose = new Pose2d(closestTagPose.getX(), closestTagPose.getY(), new Rotation2d(closestTagPose.getRotation().getRadians() - Math.PI));
+    // }
 
     return closestTagPose;
   }

@@ -5,27 +5,91 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Red Barge to F"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red Barge to F"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "F to Load"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Load to D"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Station Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "F to Load"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "D to Load"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Load to D"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D to Load"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Station Intake"
+                }
+              }
+            ]
           }
         },
         {

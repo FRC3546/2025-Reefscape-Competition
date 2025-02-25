@@ -1,6 +1,7 @@
 package frc.robot.commands.CoralAlgaeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralAlgaeSubsystem;
 
 public class IntakeAlgae extends Command {
@@ -30,6 +31,7 @@ public class IntakeAlgae extends Command {
 
     @Override
     public boolean isFinished() {
-        return (coralSubsystem.getAlgaeCurrent() > 10) && (coralSubsystem.getAlgaeCurrent() < 20);
+        // return (coralSubsystem.getAlgaeCurrent() > 10) && (coralSubsystem.getAlgaeCurrent() < 20);
+        return false;
     }
 }
