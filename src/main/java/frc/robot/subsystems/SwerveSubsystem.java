@@ -359,11 +359,51 @@ public class SwerveSubsystem extends SubsystemBase {
     return closestTagPose;
   }
 
-  public Command autoAlign(reefScoreLocation options) {
+  // public Command autoAlign(reefScoreLocation options) {
+
+  //   Pose2d closestTagPose = closestAprilTag(getPose());
+  //   SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+  //   SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+
+  //   double x1 = closestTagPose.getX();
+  //   double y1 = closestTagPose.getY();
+  //   double z1 = closestTagPose.getRotation().getRadians();
+
+  //   double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
+  //   double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
+  //   double translatedRot = z1 - Math.PI;
+  //   switch (options) {
+  //     case LEFT:
+  //       translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+  //           * Math.cos(z1 - Math.PI / 2);
+  //       translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+  //           * Math.sin(z1 - Math.PI / 2);
+  //       break;
+
+  //     case RIGHT:
+  //       translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+  //           * Math.cos(z1 + Math.PI / 2);
+  //       translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+  //           * Math.sin(z1 + Math.PI / 2);
+  //       break;
+
+  //     case ALGAE:
+  //       translatedX += Math.cos(z1 + Math.PI / 2);
+  //       translatedY += Math.sin(z1 + Math.PI / 2);
+  //       break;
+  //   }
+
+  //   SmartDashboard.putNumber("Translated X", translatedX);
+  //   SmartDashboard.putNumber("Translated Y", translatedY);
+
+  //   return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+  // }
+
+  public Command rightAutoAlign() {
 
     Pose2d closestTagPose = closestAprilTag(getPose());
-    SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
-    SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+    // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+    // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
 
     double x1 = closestTagPose.getX();
     double y1 = closestTagPose.getY();
@@ -372,29 +412,33 @@ public class SwerveSubsystem extends SubsystemBase {
     double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
     double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
     double translatedRot = z1 - Math.PI;
-    switch (options) {
-      case LEFT:
-        translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
-            * Math.cos(z1 - Math.PI / 2);
-        translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
-            * Math.sin(z1 - Math.PI / 2);
-        break;
 
-      case RIGHT:
         translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
             * Math.cos(z1 + Math.PI / 2);
         translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
             * Math.sin(z1 + Math.PI / 2);
-        break;
 
-      case ALGAE:
-        translatedX += Math.cos(z1 + Math.PI / 2);
-        translatedY += Math.sin(z1 + Math.PI / 2);
-        break;
-    }
+    return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+  }
 
-    SmartDashboard.putNumber("Translated X", translatedX);
-    SmartDashboard.putNumber("Translated Y", translatedY);
+  public Command leftAutoAlign() {
+
+    Pose2d closestTagPose = closestAprilTag(getPose());
+    // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+    // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+
+    double x1 = closestTagPose.getX();
+    double y1 = closestTagPose.getY();
+    double z1 = closestTagPose.getRotation().getRadians();
+
+    double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
+    double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
+    double translatedRot = z1 - Math.PI;
+
+    translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+    * Math.cos(z1 - Math.PI / 2);
+translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+    * Math.sin(z1 - Math.PI / 2);
 
     return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
   }

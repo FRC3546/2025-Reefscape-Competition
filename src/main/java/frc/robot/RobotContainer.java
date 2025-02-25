@@ -17,6 +17,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,8 +25,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.AutoReefAlignLeft;
-import frc.robot.commands.AutoReefAlignRight;
+// import frc.robot.commands.AutoReefAlignLeft;
+// import frc.robot.commands.AutoReefAlignRight;
 import frc.robot.commands.BargeScore;
 import frc.robot.commands.CoralStationIntake;
 import frc.robot.commands.ManualClimb;
@@ -268,16 +269,20 @@ public class RobotContainer {
 
 
 
-    driverController.button(driverRightAlign).onTrue(new InstantCommand(() -> {
-      // Schedule the auto-align command when the button is pressed
-      swerveSubsystem.autoAlign(Constants.reefScoreLocation.RIGHT).schedule();
-    })).debounce(2);
+    // driverController.button(driverRightAlign).onTrue(new InstantCommand(() -> {
+    //   // Schedule the auto-align command when the button is pressed
+    //   swerveSubsystem.autoAlign(Constants.reefScoreLocation.RIGHT).schedule();
+    // })).debounce(2);
 
-    driverController.button(driverLeftAlign).onTrue(new InstantCommand(() -> {
-      // Schedule the auto-align command when the button is pressed
-      swerveSubsystem.autoAlign(Constants.reefScoreLocation.LEFT).schedule();
-    })).debounce(2);
+    // driverController.button(driverLeftAlign).onTrue(new InstantCommand(() -> {
+    //   // Schedule the auto-align command when the button is pressed
+    //   swerveSubsystem.autoAlign(Constants.reefScoreLocation.LEFT).schedule();
+    // })).debounce(2);
+    
 
+    // driverController.button(driverRightAlign).onTrue(new DeferredCommand(() -> swerveSubsystem.autoAlign(Constants.reefScoreLocation.RIGHT), swerveSubsystem));
+    driverController.button(driverRightAlign).onTrue(new DeferredCommand(() -> swerveSubsystem.rightAutoAlign(), Set.of(swerveSubsystem)));
+    driverController.button(driverLeftAlign).onTrue(new DeferredCommand(() -> swerveSubsystem.leftAutoAlign(), Set.of(swerveSubsystem)));
     
 
     
