@@ -29,9 +29,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public enum ElevatorPositions {
         L1(10),
-        L2(41),
-        L3(60),
-        L4(90.495417),
+        L2(42),
+        L3(59),
+        L4(91.5),
         Barge(90.495417),
         AlgaeReefHigh(45.5),
         AlgaeReefLow(30),
@@ -130,7 +130,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void setPIDPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
-        backElevatorMotorPID.setReference(position.getValue(), ControlType.kPosition);
+        backElevatorMotorPID.setReference(position.getValue() + manualOffset, ControlType.kPosition);
     }
 
     public ElevatorPositions getElevatorTarget() {

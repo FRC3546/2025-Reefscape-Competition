@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Barge to F"
+                  "pathName": "Processor to F"
                 }
               }
             ]
@@ -90,24 +90,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Load to C"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "C to Load"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Load to B"
           }
         }
       ]

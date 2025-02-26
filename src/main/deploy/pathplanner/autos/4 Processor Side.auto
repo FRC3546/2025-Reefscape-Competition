@@ -1,0 +1,119 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Processor to F"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Station Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "F to Load"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Load to D"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D to Load"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Station Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Load to C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C to Load"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Load to B"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
