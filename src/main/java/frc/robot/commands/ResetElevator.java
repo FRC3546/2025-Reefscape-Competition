@@ -30,6 +30,7 @@ public class ResetElevator extends Command {
     @Override
     public void end(boolean interrupted) {
         elevatorSubsystem.setElevatorSpeed(0);
+        elevatorSubsystem.zeroElevatorPosition();
     }
 
     @Override

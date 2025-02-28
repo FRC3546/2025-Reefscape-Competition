@@ -56,6 +56,10 @@ public class ElevatorSubsystem extends SubsystemBase {
                 +0.0272627*value 
                 +0;
         }
+
+        public double getValueInches(){
+            return value;
+        }
     }
 
     public ElevatorSubsystem() {
@@ -183,19 +187,5 @@ public class ElevatorSubsystem extends SubsystemBase {
                 +0.0113236*Math.pow(getElevatorPosition(), 2) 
                 +0.0272627*getElevatorPosition() 
                 +0;
-    }
-
-    @Override
-    public void periodic() {
-
-        // if (getFrontElevatorLimitSwitch() && backElevatorMotor.get() < 0) {
-        //     backElevatorMotor.stopMotor();
-        // }
-
-        if (getFrontElevatorLimitSwitch() && getElevatorPosition() != 0) {
-            throughBoreEncoder.setPosition(0);
-        }
-
-        
     }
 }

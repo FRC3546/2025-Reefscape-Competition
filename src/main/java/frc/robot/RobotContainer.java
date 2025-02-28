@@ -40,6 +40,7 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ScoringPosition;
 import frc.robot.commands.Stow;
 import frc.robot.commands.CoralAlgaeCommands.IntakeAlgae;
+import frc.robot.commands.CoralAlgaeCommands.OuttakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeCoral;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -49,11 +50,13 @@ import frc.robot.commands.AutoCommands.AutoCoralStationIntake;
 import frc.robot.commands.AutoCommands.AutoScoringPosition;
 import frc.robot.commands.AutoCommands.AutoStow;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import frc.robot.subsystems.LEDSubsystem;
 
 public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<>();
     Field2d field = new Field2d();
 
+    public final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final CoralAlgaeSubsystem coralAlgaeSubsystem = new CoralAlgaeSubsystem();
     private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -203,8 +206,6 @@ public class RobotContainer {
     private void configureBindings() {
 
         new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
-        // new Trigger(() -> buttonBoard.getY() < 0).whileTrue(new
-        // ManualClimb(climberSubsystem, () -> -0.5));
 
         buttonBoard.button(coralAlgaeSelector)
                 .onTrue(new InstantCommand(
@@ -231,13 +232,11 @@ public class RobotContainer {
                         ElevatorPositions.AlgaeReefLow),
                 () -> coralAlgaeSubsystem.coralIntaking));
 
-        buttonBoard.button(L1Button).onTrue(
-                new ConditionalCommand(new WaitCommand(1)
-                // new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L1,
-                // elevatorSubsystem, ElevatorPositions.L1)
-                        ,
-                        new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
-                                elevatorSubsystem, ElevatorPositions.Processor),
+        buttonBoard.button(L1Button).onTrue(new ConditionalCommand(
+                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
+                        ElevatorPositions.L2),
+                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
+                        elevatorSubsystem, ElevatorPositions.Processor),
                         () -> coralAlgaeSubsystem.coralIntaking));
 
         // buttonBoard.button(L3Button)
@@ -255,10 +254,18 @@ public class RobotContainer {
         // ManualCoralAlignment(swerveSubsystem, -0.4));
         // buttonBoard.button(leftOffsetButton).whileTrue(new
         // ManualCoralAlignment(swerveSubsystem, 0.4));
-        buttonBoard.button(fireButton).onTrue(new ConditionalCommand(
-                new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem),
-                new ScoreAlgae(elevatorSubsystem, coralAlgaeSubsystem),
-                () -> coralAlgaeSubsystem.coralIntaking));
+        // buttonBoard.button(fireButton).onTrue(new ConditionalCommand(
+        //         new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem),
+        //         new ScoreAlgae(elevatorSubsystem, coralAlgaeSubsystem),
+        //         () -> coralAlgaeSubsystem.coralIntaking));
+
+        buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralIntaking)
+                .onTrue(new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem));
+
+        buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralIntaking)
+                .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
+                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.75))
+                .onFalse(new SequentialCommandGroup(new WaitCommand(1), new Stow(coralAlgaeSubsystem, elevatorSubsystem)));
 
         // buttonBoard.button(coralIntakeButton).onTrue( new ConditionalCommand(
         // new CoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem),
@@ -384,5 +391,9 @@ public class RobotContainer {
     public void resetPIDControllers() {
         elevatorSubsystem.resetPIDController();
         coralAlgaeSubsystem.resetPIDController();
+    }
+
+    public boolean isCoralIntakeMode(){
+        return coralAlgaeSubsystem.coralIntaking;
     }
 }
