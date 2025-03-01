@@ -30,15 +30,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     public enum ElevatorPositions {
         L1(10),
         L2(42),
-        L3(59),
-        L4(91.5),
+        L3(58),
+        L4(92.5),
         Barge(90.495417),
         AlgaeReefHigh(45.5),
         AlgaeReefLow(30),
         Processor(20),
         Stow(32),
-        CoralStation(34),
-        MaxHeight(92),
+        CoralStation(36.5),
+        MaxHeight(94),
         MinimumHeight(8);
 
         private final double value;
