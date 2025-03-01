@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_robotContainer.ledSubsystem.setColor(Color.Blue);
+    // m_robotContainer.ledSubsystem.setColor(Color.Blue);
 
     // Create a timer to disable motor brake a few seconds after disable. This will
     // let the robot stop
@@ -140,12 +140,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if(!m_robotContainer.isCoralIntakeMode()){
-      m_robotContainer.ledSubsystem.setColor(Color.Green);
-    }
-    else{
-      m_robotContainer.ledSubsystem.setColor(Color.White);
-    }
+    // if(!m_robotContainer.isCoralIntakeMode()){
+    //   m_robotContainer.ledSubsystem.setColor(Color.Green);
+    // }
+    // else{
+    //   m_robotContainer.ledSubsystem.setColor(Color.White);
+    // }
   }
 
   @Override

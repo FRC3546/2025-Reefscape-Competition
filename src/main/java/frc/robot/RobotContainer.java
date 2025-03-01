@@ -56,7 +56,7 @@ public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<>();
     Field2d field = new Field2d();
 
-    public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+//     public final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final CoralAlgaeSubsystem coralAlgaeSubsystem = new CoralAlgaeSubsystem();
     private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
