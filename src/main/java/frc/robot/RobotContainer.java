@@ -199,6 +199,9 @@ public class RobotContainer {
 
         new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
 
+        new Trigger(() -> buttonBoard.getX() > 0.5).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
+        new Trigger(() -> buttonBoard.getX() < 0.5).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
+
 
         buttonBoard.button(coralAlgaeSelector)
                 .onTrue(new InstantCommand(

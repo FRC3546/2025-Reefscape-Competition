@@ -188,4 +188,21 @@ public class ElevatorSubsystem extends SubsystemBase {
                 +0.0272627*getElevatorPosition() 
                 +0;
     }
+
+    public double inchToEncoderConverter(double inches){
+        return 
+            0.000000723783*Math.pow(inches, 4) 
+            -0.000158195*Math.pow(inches, 3) 
+                +0.0113236*Math.pow(inches, 2) 
+                +0.0272627*inches 
+                +0;
+    }
+
+    public void setManualOffset(double manualOffset){
+        this.manualOffset = manualOffset;
+    }
+
+    public void addSubtractManualOffset(double addSubstract){
+        manualOffset += addSubstract;
+    }
 }
