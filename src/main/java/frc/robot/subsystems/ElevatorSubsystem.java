@@ -29,15 +29,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public enum ElevatorPositions {
         L1(10),
-        L2(42),
-        L3(58),
-        L4(92.5),
+        L2(45),
+        L3(64),
+        L4(91.25),
         Barge(90.495417),
-        AlgaeReefHigh(45.5),
-        AlgaeReefLow(30),
-        Processor(20),
+        AlgaeReefHigh(54.5),
+        AlgaeReefLow(39),
+        Processor(23),
         Stow(32),
-        CoralStation(36.5),
+        CoralStation(30.5),
         MaxHeight(94),
         MinimumHeight(8);
 
@@ -49,12 +49,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         public double getValue() {
             // return .000130994x^{4}-.0067331x^{3}+.118148x^{2}+2.30416x+8;
-            return 
-            0.000000723783*Math.pow(value, 4) 
-            -0.000158195*Math.pow(value, 3) 
-                +0.0113236*Math.pow(value, 2) 
-                +0.0272627*value 
-                +0;
+            // return 
+            // 0.000000723783*Math.pow(value, 4) 
+            // -0.000158195*Math.pow(value, 3) 
+            //     +0.0113236*Math.pow(value, 2) 
+            //     +0.0272627*value 
+            //     +0;
+            return 0.329911*value - 1.92945;
         }
 
         public double getValueInches(){
@@ -162,7 +163,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void zeroElevatorPosition() {
-        backElevatorMotor.getEncoder().setPosition(0);
+        throughBoreEncoder.setPosition(0);
     }
 
     public void resetPIDController(){
@@ -172,12 +173,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     public double encoderToInch(){
         // return 2.98857 * getElevatorPosition() + 7.62804;
-        return 
-            0.000130884*Math.pow(getElevatorPosition(), 4) 
-            -0.0067331*Math.pow(getElevatorPosition(), 3) 
-            +0.118148*Math.pow(getElevatorPosition(), 2) 
-            +2.30416*getElevatorPosition() 
-            +8;
+        // return 
+        //     0.000130884*Math.pow(getElevatorPosition(), 4) 
+        //     -0.0067331*Math.pow(getElevatorPosition(), 3) 
+        //     +0.118148*Math.pow(getElevatorPosition(), 2) 
+        //     +2.30416*getElevatorPosition() 
+        //     +8;
+        return 2.91627 * getElevatorPosition() + 8;
     }
 
     public double inchToEncoder(){
@@ -190,12 +192,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double inchToEncoderConverter(double inches){
-        return 
-            0.000000723783*Math.pow(inches, 4) 
-            -0.000158195*Math.pow(inches, 3) 
-                +0.0113236*Math.pow(inches, 2) 
-                +0.0272627*inches 
-                +0;
+        // return 
+        //     0.000000723783*Math.pow(inches, 4) 
+        //     -0.000158195*Math.pow(inches, 3) 
+        //         +0.0113236*Math.pow(inches, 2) 
+        //         +0.0272627*inches 
+        //         +0;
+        return 0.329911*inches - 1.92945;
     }
 
     public void setManualOffset(double manualOffset){
