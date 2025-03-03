@@ -24,16 +24,16 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
     private SparkMaxConfig pivotMotorConfig;
     private SparkMaxConfig intakeMotorConfig;
     public boolean coralIntaking = true;
-
+    //.7199
     public enum CoralPivotPositions {
         // increases moving towards the front
         L1(0.537),
         L2(0.72),
         L3(0.72),
-        L4(0.743),
+        L4(0.743 + 0.008),
         AlgaeReef(0.5),
         Barge(0.4),
-        Stow(0.306),
+        Stow(0.256),
         CoralStation(.215),
         MinimumAngle(.5),
         MaximumAngle(.5);

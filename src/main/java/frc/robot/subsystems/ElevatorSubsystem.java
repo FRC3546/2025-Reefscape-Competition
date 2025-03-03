@@ -135,7 +135,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void setPIDPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
-        backElevatorMotorPID.setReference(position.getValue() + manualOffset, ControlType.kPosition);
+        backElevatorMotorPID.setReference(position.getValue() + getManualOffset(), ControlType.kPosition);
+    }
+
+    public void bumbPIDPosition(){
+        backElevatorMotorPID.setReference(targetElevatorPosition.getValue() + getManualOffset(), ControlType.kPosition);
     }
 
     public ElevatorPositions getElevatorTarget() {
@@ -207,5 +211,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void addSubtractManualOffset(double addSubstract){
         manualOffset += addSubstract;
+    }
+
+    public double getManualOffset(){
+        return manualOffset;
     }
 }

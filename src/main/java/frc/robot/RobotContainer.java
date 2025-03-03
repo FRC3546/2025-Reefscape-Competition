@@ -152,13 +152,14 @@ public class RobotContainer {
      */
 
     public RobotContainer() {
+        elevatorSubsystem.setManualOffset(0);
         elevatorSubsystem.zeroElevatorPosition();
         NamedCommands.registerCommand("Elevator to L4",
                 new SequentialCommandGroup(
                         new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
                                 ElevatorPositions.L4),
                         new InstantCommand(() -> coralAlgaeSubsystem.setPIDPosition(CoralPivotPositions.L4)),
-                        new WaitUntilCommand(() -> elevatorSubsystem.encoderToInch() > 85)));
+                        new WaitUntilCommand(() -> elevatorSubsystem.encoderToInch() > 87.5)));
         NamedCommands.registerCommand("Elevator to L3",
                 new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
                         ElevatorPositions.L3));
@@ -201,6 +202,8 @@ public class RobotContainer {
 
         // new Trigger(() -> buttonBoard.getX() > 0.5).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
         // new Trigger(() -> buttonBoard.getX() < 0.5).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
+        // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1)).andThen(new InstantCommand(() -> elevatorSubsystem.bumbPIDPosition()).withTimeout(0.2))));
+        // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(L1Button);))
         buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
         buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
 
@@ -252,7 +255,7 @@ public class RobotContainer {
                 .whileFalse(new IntakeAlgae(coralAlgaeSubsystem, 0));
 
         buttonBoard.button(stowButton).onTrue(new Stow(coralAlgaeSubsystem, elevatorSubsystem)).debounce(0.3)
-                .whileTrue(new ResetElevator(elevatorSubsystem, coralAlgaeSubsystem));
+                .whileTrue(new ResetElevator(elevatorSubsystem, coralAlgaeSubsystem).andThen(new WaitCommand(0.75).andThen(new InstantCommand(() -> elevatorSubsystem.zeroElevatorPosition()))));
 
 
         driverController.button(driverRightAlign)
@@ -314,6 +317,7 @@ public class RobotContainer {
 
         SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
         SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
+        SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
     }
 
     public void resetPIDControllers() {
