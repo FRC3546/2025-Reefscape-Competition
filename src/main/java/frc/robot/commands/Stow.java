@@ -10,7 +10,6 @@ public class Stow extends Command {
 
     CoralAlgaeSubsystem coralSubsystem;
     ElevatorSubsystem elevatorSubsystem;
-    boolean coralMode;
 
     public Stow(CoralAlgaeSubsystem coralSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.coralSubsystem = coralSubsystem;
@@ -20,8 +19,14 @@ public class Stow extends Command {
 
     @Override
     public void initialize() {
-        elevatorSubsystem.setPIDPosition(ElevatorPositions.Stow);
-        coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
+        if(coralSubsystem.coralMode == false){
+            elevatorSubsystem.setPIDPosition(ElevatorPositions.AlgaeReefLow);
+            coralSubsystem.setPIDPosition(CoralPivotPositions.AlgaeReef);
+        }
+        else{
+            elevatorSubsystem.setPIDPosition(ElevatorPositions.Stow);
+            coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
+        }
     }
 
     @Override
