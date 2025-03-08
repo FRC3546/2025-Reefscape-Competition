@@ -122,6 +122,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         return throughBoreEncoder.getVelocity();
     }
 
+    public ElevatorPositions getTargetElevatorPosition(){
+        return targetElevatorPosition;
+    }
+
     public void setElevatorSpeed(double speed) {
         backElevatorMotor.set(speed);
     }
@@ -173,13 +177,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         return 2.91627 * getElevatorPosition() + 8;
     }
 
-    public double inchToEncoder() {
-        return 0.000000723783 * Math.pow(getElevatorPosition(), 4)
-                - 0.000158195 * Math.pow(getElevatorPosition(), 3)
-                + 0.0113236 * Math.pow(getElevatorPosition(), 2)
-                + 0.0272627 * getElevatorPosition()
-                + 0;
-    }
+    // public double inchToEncoder() {
+    //     return 0.000000723783 * Math.pow(getElevatorPosition(), 4)
+    //             - 0.000158195 * Math.pow(getElevatorPosition(), 3)
+    //             + 0.0113236 * Math.pow(getElevatorPosition(), 2)
+    //             + 0.0272627 * getElevatorPosition()
+    //             + 0;
+    // }
 
     public double inchToEncoderConverter(double inches) {
         return 0.329911 * inches - 1.92945;

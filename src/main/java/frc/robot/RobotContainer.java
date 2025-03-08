@@ -50,6 +50,7 @@ import frc.robot.commands.AutoCommands.AutoStow;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 
 public class RobotContainer {
+        public ElevatorSubsystem.ElevatorPositions targetElevatorPosition = ElevatorSubsystem.ElevatorPositions.Stow;
         SendableChooser<Command> autoChooser = new SendableChooser<>();
         Field2d field = new Field2d();
         private final CoralAlgaeSubsystem coralAlgaeSubsystem = new CoralAlgaeSubsystem();
@@ -256,10 +257,14 @@ public class RobotContainer {
                                                                 () -> elevatorSubsystem.zeroElevatorPosition()))));
 
                 driverController.button(driverRightAlign)
-                                .onTrue(new DeferredCommand(() -> swerveSubsystem.rightAutoAlign(),
+                                .onTrue(new DeferredCommand(
+                                                () -> swerveSubsystem
+                                                                .rightAutoAlign(elevatorSubsystem.getElevatorTarget()),
                                                 Set.of(swerveSubsystem)));
                 driverController.button(driverLeftAlign)
-                                .onTrue(new DeferredCommand(() -> swerveSubsystem.leftAutoAlign(),
+                                .onTrue(new DeferredCommand(
+                                                () -> swerveSubsystem
+                                                                .leftAutoAlign(elevatorSubsystem.getElevatorTarget()),
                                                 Set.of(swerveSubsystem)));
 
                 // swerve logic
@@ -316,5 +321,9 @@ public class RobotContainer {
 
         public boolean isCoralIntakeMode() {
                 return coralAlgaeSubsystem.coralMode;
+        }
+
+        public void updateElevatorTargetPosition() {
+                targetElevatorPosition = elevatorSubsystem.getTargetElevatorPosition();
         }
 }

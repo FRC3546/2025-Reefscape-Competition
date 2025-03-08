@@ -34,7 +34,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.reefAlignmentConstants;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 import frc.robot.subsystems.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -261,10 +263,24 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
    */
-  public Command driveToPose(Pose2d pose) {
+  public Command driveToPoseSlow(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
         3.0, 1.0,
+        Units.degreesToRadians(360), Units.degreesToRadians(360));
+
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+    );
+  }
+
+  public Command driveToPoseFast(Pose2d pose) {
+    // Create the constraints to use while pathfinding
+    PathConstraints constraints = new PathConstraints(
+        3.0, 0.25,
         Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -405,7 +421,7 @@ public class SwerveSubsystem extends SubsystemBase {
   // Rotation2d(translatedRot)));
   // }
 
-  public Command rightAutoAlign() {
+  public Command rightAutoAlign(ElevatorPositions elevatorPosition) {
 
     Pose2d closestTagPose = closestAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
@@ -424,10 +440,14 @@ public class SwerveSubsystem extends SubsystemBase {
     translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
         * Math.sin(z1 + Math.PI / 2);
 
-    return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+    if (elevatorPosition == ElevatorPositions.L2 || elevatorPosition == ElevatorPositions.L3) {
+      return driveToPoseFast(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+    } else {
+      return driveToPoseSlow(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+    }
   }
 
-  public Command leftAutoAlign() {
+  public Command leftAutoAlign(ElevatorPositions elevatorPosition) {
 
     Pose2d closestTagPose = closestAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
@@ -446,7 +466,11 @@ public class SwerveSubsystem extends SubsystemBase {
     translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
         * Math.sin(z1 - Math.PI / 2);
 
-    return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+    if (elevatorPosition == ElevatorPositions.L2 || elevatorPosition == ElevatorPositions.L3) {
+      return driveToPoseFast(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+    } else {
+      return driveToPoseSlow(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+    }
   }
 
   /**
