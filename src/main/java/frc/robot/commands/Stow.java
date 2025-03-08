@@ -10,6 +10,7 @@ public class Stow extends Command {
 
     CoralAlgaeSubsystem coralSubsystem;
     ElevatorSubsystem elevatorSubsystem;
+    boolean coralMode;
 
     public Stow(CoralAlgaeSubsystem coralSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.coralSubsystem = coralSubsystem;

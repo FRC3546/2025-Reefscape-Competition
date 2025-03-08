@@ -23,7 +23,9 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
     private SparkClosedLoopController pivotMotorPID;
     private SparkMaxConfig pivotMotorConfig;
     private SparkMaxConfig intakeMotorConfig;
-    public boolean coralIntaking = true;
+    // when coralMode true, intake and score for coral
+    // when coralMode flase, intake and score for algae
+    public boolean coralMode = true;
     //.7199
     public enum CoralPivotPositions {
         // increases moving towards the front
@@ -135,8 +137,8 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         pivotMotor.set(0);
     }
 
-    public void setCoralIntakeMode(boolean coralIntake){
-        coralIntaking = coralIntake;
+    public void setCoralIntakeMode(boolean coralMode){
+        this.coralMode = coralMode;
     }
 
     public double getAlgaeCurrent(){

@@ -1,7 +1,6 @@
 package frc.robot.commands.CoralAlgaeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralAlgaeSubsystem;
 
 public class IntakeAlgae extends Command {

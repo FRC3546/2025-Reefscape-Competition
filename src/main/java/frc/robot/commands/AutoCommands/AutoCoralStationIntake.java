@@ -8,7 +8,6 @@ import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.CoralAlgaeSubsystem.CoralPivotPositions;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
-import frc.robot.commands.AutoCommands.AutoScoringPosition;
 
 public class AutoCoralStationIntake extends SequentialCommandGroup {
 
