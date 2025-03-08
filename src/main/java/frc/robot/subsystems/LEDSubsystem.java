@@ -15,9 +15,9 @@ public class LEDSubsystem extends SubsystemBase {
     public enum Color {
         Green(0, 255, 0),
         White(255, 255, 255),
-        Red(255,0,0),
-        Gold(255,215,0),
-        Blue(0,0,255);
+        Red(255, 0, 0),
+        Gold(255, 215, 0),
+        Blue(0, 0, 255);
 
         private final int r;
         private final int g;

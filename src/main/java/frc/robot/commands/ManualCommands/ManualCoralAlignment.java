@@ -16,16 +16,17 @@ public class ManualCoralAlignment extends Command {
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 
     @Override
     public void execute() {
-        swerveSubsystem.drive(new Translation2d(0,speed), 0, false);
+        swerveSubsystem.drive(new Translation2d(0, speed), 0, false);
     }
 
     @Override
     public void end(boolean interrupted) {
-        swerveSubsystem.drive(new Translation2d(0,0), 0, false);
+        swerveSubsystem.drive(new Translation2d(0, 0), 0, false);
     }
 
     @Override

@@ -1,4 +1,5 @@
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -8,7 +9,7 @@ public class ResetElevator extends Command {
     private ElevatorSubsystem elevatorSubsystem;
     private CoralAlgaeSubsystem coralSubsystem;
 
-    public ResetElevator(ElevatorSubsystem elevatorSubsystem,CoralAlgaeSubsystem coralSubsystem) {
+    public ResetElevator(ElevatorSubsystem elevatorSubsystem, CoralAlgaeSubsystem coralSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
         this.coralSubsystem = coralSubsystem;
         addRequirements(coralSubsystem);
@@ -22,7 +23,7 @@ public class ResetElevator extends Command {
 
     @Override
     public void execute() {
-        if(elevatorSubsystem.getBackElevatorLimitSwitch()){
+        if (elevatorSubsystem.getBackElevatorLimitSwitch()) {
             elevatorSubsystem.setElevatorSpeed(-0.4);
         }
     }

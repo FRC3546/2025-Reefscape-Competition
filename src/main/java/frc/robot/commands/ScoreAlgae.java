@@ -5,13 +5,12 @@ import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeAlgae;
 
-public class ScoreAlgae extends SequentialCommandGroup{
+public class ScoreAlgae extends SequentialCommandGroup {
 
-    public ScoreAlgae(ElevatorSubsystem elevatorSubsystem, CoralAlgaeSubsystem coralAlgaeSubsystem){
+    public ScoreAlgae(ElevatorSubsystem elevatorSubsystem, CoralAlgaeSubsystem coralAlgaeSubsystem) {
         addCommands(
-            new OuttakeAlgae(coralAlgaeSubsystem, 1).withTimeout(0.75),
-            new Stow(coralAlgaeSubsystem, elevatorSubsystem)
-        );
+                new OuttakeAlgae(coralAlgaeSubsystem, 1).withTimeout(0.75),
+                new Stow(coralAlgaeSubsystem, elevatorSubsystem));
     }
-    
+
 }

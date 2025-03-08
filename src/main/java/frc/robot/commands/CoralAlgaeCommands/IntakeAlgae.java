@@ -30,7 +30,8 @@ public class IntakeAlgae extends Command {
 
     @Override
     public boolean isFinished() {
-        // return (coralSubsystem.getAlgaeCurrent() > 10) && (coralSubsystem.getAlgaeCurrent() < 20);
+        // return (coralSubsystem.getAlgaeCurrent() > 10) &&
+        // (coralSubsystem.getAlgaeCurrent() < 20);
         return false;
     }
 }

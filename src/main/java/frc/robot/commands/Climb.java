@@ -6,30 +6,30 @@
 
 // public class Climb extends Command {
 
-//     ClimberSubsystem climberSubsystem;
-//     double speed;
+// ClimberSubsystem climberSubsystem;
+// double speed;
 
-//     public Climb(ClimberSubsystem climberSubsystem, double speed) {
-//         this.climberSubsystem = climberSubsystem;
-//         this.speed = Math.abs(speed);
-//         addRequirements(climberSubsystem);
-//     }
+// public Climb(ClimberSubsystem climberSubsystem, double speed) {
+// this.climberSubsystem = climberSubsystem;
+// this.speed = Math.abs(speed);
+// addRequirements(climberSubsystem);
+// }
 
-//     @Override
-//     public void initialize() {
-        
-//     }
+// @Override
+// public void initialize() {
 
-//     @Override
-//     public void execute() {
-//     }
+// }
 
-//     @Override
-//     public void end(boolean interrupted) {
-//     }
+// @Override
+// public void execute() {
+// }
 
-//     @Override
-//     public boolean isFinished() {
-//         return false;
-//     }
+// @Override
+// public void end(boolean interrupted) {
+// }
+
+// @Override
+// public boolean isFinished() {
+// return false;
+// }
 // }

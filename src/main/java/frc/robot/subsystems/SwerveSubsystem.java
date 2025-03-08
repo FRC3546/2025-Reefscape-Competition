@@ -351,7 +351,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     // if (closestTagID == 1) {
-    //   closestTagPose = new Pose2d(closestTagPose.getX(), closestTagPose.getY(), new Rotation2d(closestTagPose.getRotation().getRadians() - Math.PI));
+    // closestTagPose = new Pose2d(closestTagPose.getX(), closestTagPose.getY(), new
+    // Rotation2d(closestTagPose.getRotation().getRadians() - Math.PI));
     // }
 
     return closestTagPose;
@@ -359,42 +360,49 @@ public class SwerveSubsystem extends SubsystemBase {
 
   // public Command autoAlign(reefScoreLocation options) {
 
-  //   Pose2d closestTagPose = closestAprilTag(getPose());
-  //   SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
-  //   SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+  // Pose2d closestTagPose = closestAprilTag(getPose());
+  // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+  // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
 
-  //   double x1 = closestTagPose.getX();
-  //   double y1 = closestTagPose.getY();
-  //   double z1 = closestTagPose.getRotation().getRadians();
+  // double x1 = closestTagPose.getX();
+  // double y1 = closestTagPose.getY();
+  // double z1 = closestTagPose.getRotation().getRadians();
 
-  //   double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
-  //   double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
-  //   double translatedRot = z1 - Math.PI;
-  //   switch (options) {
-  //     case LEFT:
-  //       translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
-  //           * Math.cos(z1 - Math.PI / 2);
-  //       translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
-  //           * Math.sin(z1 - Math.PI / 2);
-  //       break;
+  // double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) *
+  // Math.cos(z1));
+  // double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) *
+  // Math.sin(z1));
+  // double translatedRot = z1 - Math.PI;
+  // switch (options) {
+  // case LEFT:
+  // translatedX += (reefAlignmentConstants.reefSpacing +
+  // reefAlignmentConstants.coralScoreOffset)
+  // * Math.cos(z1 - Math.PI / 2);
+  // translatedY += (reefAlignmentConstants.reefSpacing +
+  // reefAlignmentConstants.coralScoreOffset)
+  // * Math.sin(z1 - Math.PI / 2);
+  // break;
 
-  //     case RIGHT:
-  //       translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
-  //           * Math.cos(z1 + Math.PI / 2);
-  //       translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
-  //           * Math.sin(z1 + Math.PI / 2);
-  //       break;
+  // case RIGHT:
+  // translatedX += (reefAlignmentConstants.reefSpacing -
+  // reefAlignmentConstants.coralScoreOffset)
+  // * Math.cos(z1 + Math.PI / 2);
+  // translatedY += (reefAlignmentConstants.reefSpacing -
+  // reefAlignmentConstants.coralScoreOffset)
+  // * Math.sin(z1 + Math.PI / 2);
+  // break;
 
-  //     case ALGAE:
-  //       translatedX += Math.cos(z1 + Math.PI / 2);
-  //       translatedY += Math.sin(z1 + Math.PI / 2);
-  //       break;
-  //   }
+  // case ALGAE:
+  // translatedX += Math.cos(z1 + Math.PI / 2);
+  // translatedY += Math.sin(z1 + Math.PI / 2);
+  // break;
+  // }
 
-  //   SmartDashboard.putNumber("Translated X", translatedX);
-  //   SmartDashboard.putNumber("Translated Y", translatedY);
+  // SmartDashboard.putNumber("Translated X", translatedX);
+  // SmartDashboard.putNumber("Translated Y", translatedY);
 
-  //   return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+  // return driveToPose(new Pose2d(translatedX, translatedY, new
+  // Rotation2d(translatedRot)));
   // }
 
   public Command rightAutoAlign() {
@@ -411,10 +419,10 @@ public class SwerveSubsystem extends SubsystemBase {
     double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
     double translatedRot = z1 - Math.PI;
 
-        translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
-            * Math.cos(z1 + Math.PI / 2);
-        translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
-            * Math.sin(z1 + Math.PI / 2);
+    translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+        * Math.cos(z1 + Math.PI / 2);
+    translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+        * Math.sin(z1 + Math.PI / 2);
 
     return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
   }
@@ -434,9 +442,9 @@ public class SwerveSubsystem extends SubsystemBase {
     double translatedRot = z1 - Math.PI;
 
     translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
-    * Math.cos(z1 - Math.PI / 2);
-translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
-    * Math.sin(z1 - Math.PI / 2);
+        * Math.cos(z1 - Math.PI / 2);
+    translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+        * Math.sin(z1 - Math.PI / 2);
 
     return driveToPose(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
   }

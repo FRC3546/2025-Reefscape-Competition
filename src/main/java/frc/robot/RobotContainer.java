@@ -50,279 +50,301 @@ import frc.robot.commands.AutoCommands.AutoStow;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 
 public class RobotContainer {
-    SendableChooser<Command> autoChooser = new SendableChooser<>();
-    Field2d field = new Field2d();
+        SendableChooser<Command> autoChooser = new SendableChooser<>();
+        Field2d field = new Field2d();
 
-//     public final LEDSubsystem ledSubsystem = new LEDSubsystem();
-    private final CoralAlgaeSubsystem coralAlgaeSubsystem = new CoralAlgaeSubsystem();
-    private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-    // private CommandJoystick testJoystick = new CommandJoystick(1);
-    // private CommandJoystick testCoralJoystick = new CommandJoystick(2);
-    private CommandJoystick buttonBoard = new CommandJoystick(1);
-    final CommandXboxController driverController = new CommandXboxController(0);
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-            "swerve"));
+        // public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+        private final CoralAlgaeSubsystem coralAlgaeSubsystem = new CoralAlgaeSubsystem();
+        private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+        private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+        // private CommandJoystick testJoystick = new CommandJoystick(1);
+        // private CommandJoystick testCoralJoystick = new CommandJoystick(2);
+        private CommandJoystick buttonBoard = new CommandJoystick(1);
+        final CommandXboxController driverController = new CommandXboxController(0);
+        private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                        "swerve"));
 
-    private int driverLeftAlign = 1;
-    private int driverRightAlign = 2;
+        private int driverLeftAlign = 1;
+        private int driverRightAlign = 2;
 
-    private int L1Button = 9;
-    private int L2Button = 8;
-    private int L3Button = 5;
-    private int L4Button = 1;
+        private int L1Button = 9;
+        private int L2Button = 8;
+        private int L3Button = 5;
+        private int L4Button = 1;
 
-    private int disableAutoButton = 2;
+        private int disableAutoButton = 2;
 
-    private int leftOffsetButton = 10;
-    private int rightOffsetButton = 11;
-    private int coralIntakeButton = 6;
-    private int fireButton = 7;
-    private int coralAlgaeSelector = 3;
-    private int stowButton = 4;
+        private int leftOffsetButton = 10;
+        private int rightOffsetButton = 11;
+        private int coralIntakeButton = 6;
+        private int fireButton = 7;
+        private int coralAlgaeSelector = 3;
+        private int stowButton = 4;
 
-    /**
-     * Converts driver input into a field-relative ChassisSpeeds that is controlled
-     * by angular velocity.
-     */
-    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
-            () -> driverController.getLeftY() * 1,
-            () -> driverController.getLeftX() * -1)
-            .withControllerRotationAxis(() -> -driverController.getRawAxis(2))
-            .deadband(OperatorConstants.DEADBAND)
-            .scaleTranslation(1.2)
-            .allianceRelativeControl(true);
+        /**
+         * Converts driver input into a field-relative ChassisSpeeds that is controlled
+         * by angular velocity.
+         */
+        SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+                        () -> driverController.getLeftY() * 1,
+                        () -> driverController.getLeftX() * -1)
+                        .withControllerRotationAxis(() -> -driverController.getRawAxis(2))
+                        .deadband(OperatorConstants.DEADBAND)
+                        .scaleTranslation(1.2)
+                        .allianceRelativeControl(true);
 
-    /**
-     * Clone's the angular velocity input stream and converts it to a fieldRelative
-     * input stream.
-     */
-    SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-            .withControllerHeadingAxis(driverController::getRightX,
-                    driverController::getRightY)
-            .headingWhile(true);
+        /**
+         * Clone's the angular velocity input stream and converts it to a fieldRelative
+         * input stream.
+         */
+        SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
+                        .withControllerHeadingAxis(driverController::getRightX,
+                                        driverController::getRightY)
+                        .headingWhile(true);
 
-    // Applies deadbands and inverts controls because joysticks
-    // are back-right positive while robot
-    // controls are front-left positive
-    // left stick controls translation
-    // right stick controls the desired angle NOT angular rotation
-    Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
+        // Applies deadbands and inverts controls because joysticks
+        // are back-right positive while robot
+        // controls are front-left positive
+        // left stick controls translation
+        // right stick controls the desired angle NOT angular rotation
+        Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
 
-    // Applies deadbands and inverts controls because joysticks
-    // are back-right positive while robot
-    // controls are front-left positive
-    // left stick controls translation
-    // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
+        // Applies deadbands and inverts controls because joysticks
+        // are back-right positive while robot
+        // controls are front-left positive
+        // left stick controls translation
+        // right stick controls the angular velocity of the robot
+        Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
 
-    Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+        Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
 
-    SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX())
-            .withControllerRotationAxis(() -> driverController.getRawAxis(2))
-            .deadband(OperatorConstants.DEADBAND)
-            .scaleTranslation(0.8)
-            .allianceRelativeControl(true);
-    // Derive the heading axis with math!
-    SwerveInputStream driveDirectAngleSim = driveAngularVelocitySim.copy()
-            .withControllerHeadingAxis(() -> Math.sin(
-                    driverController.getRawAxis(
-                            2) * Math.PI)
-                    * (Math.PI * 2),
-                    () -> Math.cos(
-                            driverController.getRawAxis(
-                                    2) * Math.PI)
-                            *
-                            (Math.PI * 2))
-            .headingWhile(true);
+        SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+                        () -> -driverController.getLeftY(),
+                        () -> -driverController.getLeftX())
+                        .withControllerRotationAxis(() -> driverController.getRawAxis(2))
+                        .deadband(OperatorConstants.DEADBAND)
+                        .scaleTranslation(0.8)
+                        .allianceRelativeControl(true);
+        // Derive the heading axis with math!
+        SwerveInputStream driveDirectAngleSim = driveAngularVelocitySim.copy()
+                        .withControllerHeadingAxis(() -> Math.sin(
+                                        driverController.getRawAxis(
+                                                        2) * Math.PI)
+                                        * (Math.PI * 2),
+                                        () -> Math.cos(
+                                                        driverController.getRawAxis(
+                                                                        2) * Math.PI)
+                                                        *
+                                                        (Math.PI * 2))
+                        .headingWhile(true);
 
-    Command driveFieldOrientedDirectAngleSim = swerveSubsystem.driveFieldOriented(driveDirectAngleSim);
+        Command driveFieldOrientedDirectAngleSim = swerveSubsystem.driveFieldOriented(driveDirectAngleSim);
 
-    Command driveFieldOrientedAnglularVelocitySim = swerveSubsystem.driveFieldOriented(driveAngularVelocitySim);
+        Command driveFieldOrientedAnglularVelocitySim = swerveSubsystem.driveFieldOriented(driveAngularVelocitySim);
 
-    Command driveSetpointGenSim = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
+        Command driveSetpointGenSim = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
+        /**
+         * The container for the robot. Contains subsystems, OI devices, and commands.
+         */
 
-    public RobotContainer() {
-        elevatorSubsystem.setManualOffset(0);
-        elevatorSubsystem.zeroElevatorPosition();
-        NamedCommands.registerCommand("Elevator to L4",
-                new SequentialCommandGroup(
-                        new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
-                                ElevatorPositions.L4),
-                        new InstantCommand(() -> coralAlgaeSubsystem.setPIDPosition(CoralPivotPositions.L4)),
-                        new WaitUntilCommand(() -> elevatorSubsystem.encoderToInch() > 87.5)));
-        NamedCommands.registerCommand("Elevator to L3",
-                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
-                        ElevatorPositions.L3));
-        NamedCommands.registerCommand("Elevator to L2",
-                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
-                        ElevatorPositions.L2));
-        NamedCommands.registerCommand("Elevator to L1",
-                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L1, elevatorSubsystem,
-                        ElevatorPositions.L1));
-        NamedCommands.registerCommand("Coral Station Intake",
-                new AutoCoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
-        NamedCommands.registerCommand("Stow", new AutoStow(coralAlgaeSubsystem, elevatorSubsystem));
-        NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(1));
-        
-        autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
-        autoChooser.addOption("NOT Processor Side 2.5", swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
-        autoChooser.addOption("Back up", swerveSubsystem.driveCommand(() -> 0, () -> -0.5, () -> 0).withTimeout(1));
-        SmartDashboard.putData("Autonomous Routines", autoChooser);
+        public RobotContainer() {
+                elevatorSubsystem.setManualOffset(0);
+                elevatorSubsystem.zeroElevatorPosition();
+                NamedCommands.registerCommand("Elevator to L4",
+                                new SequentialCommandGroup(
+                                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4,
+                                                                elevatorSubsystem,
+                                                                ElevatorPositions.L4),
+                                                new InstantCommand(() -> coralAlgaeSubsystem
+                                                                .setPIDPosition(CoralPivotPositions.L4)),
+                                                new WaitUntilCommand(() -> elevatorSubsystem.encoderToInch() > 87.5)));
+                NamedCommands.registerCommand("Elevator to L3",
+                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
+                                                ElevatorPositions.L3));
+                NamedCommands.registerCommand("Elevator to L2",
+                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
+                                                ElevatorPositions.L2));
+                NamedCommands.registerCommand("Elevator to L1",
+                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L1, elevatorSubsystem,
+                                                ElevatorPositions.L1));
+                NamedCommands.registerCommand("Coral Station Intake",
+                                new AutoCoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
+                NamedCommands.registerCommand("Stow", new AutoStow(coralAlgaeSubsystem, elevatorSubsystem));
+                NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(1));
 
-        configureBindings();
-        DriverStation.silenceJoystickConnectionWarning(true);
-    }
+                autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
+                autoChooser.addOption("NOT Processor Side 2.5",
+                                swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
+                autoChooser.addOption("Back up",
+                                swerveSubsystem.driveCommand(() -> 0, () -> -0.5, () -> 0).withTimeout(1));
+                SmartDashboard.putData("Autonomous Routines", autoChooser);
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be
-     * created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-     * an arbitrary predicate, or via the
-     * named factories in
-     * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
-     * for
-     * {@link CommandXboxController
-     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
-     * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
-     * Flight joysticks}.
-     */
-    private void configureBindings() {
-
-        new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
-
-        // new Trigger(() -> buttonBoard.getX() > 0.5).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
-        // new Trigger(() -> buttonBoard.getX() < 0.5).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
-        // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1)).andThen(new InstantCommand(() -> elevatorSubsystem.bumbPIDPosition()).withTimeout(0.2))));
-        // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(L1Button);))
-        buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
-        buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
-
-        buttonBoard.button(coralAlgaeSelector)
-                .onTrue(new InstantCommand(
-                        () -> coralAlgaeSubsystem.setCoralIntakeMode(!coralAlgaeSubsystem.coralMode)))
-                .debounce(1);
-
-        buttonBoard.button(L4Button).onTrue(new ConditionalCommand(
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
-                        ElevatorPositions.L4),
-                new BargeScore(coralAlgaeSubsystem, elevatorSubsystem),
-                () -> coralAlgaeSubsystem.coralMode));
-
-        buttonBoard.button(L3Button).onTrue(new ConditionalCommand(
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
-                        ElevatorPositions.L3),
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef, elevatorSubsystem,
-                        ElevatorPositions.AlgaeReefHigh),
-                () -> coralAlgaeSubsystem.coralMode));
-
-        buttonBoard.button(L2Button).onTrue(new ConditionalCommand(
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
-                        ElevatorPositions.L2),
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef, elevatorSubsystem,
-                        ElevatorPositions.AlgaeReefLow),
-                () -> coralAlgaeSubsystem.coralMode));
-
-        buttonBoard.button(L1Button).onTrue(new ConditionalCommand(
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
-                        ElevatorPositions.L2),
-                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
-                        elevatorSubsystem, ElevatorPositions.Processor),
-                        () -> coralAlgaeSubsystem.coralMode));
-
-        buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralMode)
-                .onTrue(new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem));
-
-        buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralMode)
-                .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
-                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.75))
-                .onFalse(new SequentialCommandGroup(new WaitCommand(1), new Stow(coralAlgaeSubsystem, elevatorSubsystem)));
-
-        buttonBoard.button(coralIntakeButton).and(() -> coralAlgaeSubsystem.coralMode)
-                .onTrue(new CoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
-
-        buttonBoard.button(coralIntakeButton).and(() -> !coralAlgaeSubsystem.coralMode)
-                .whileTrue(new IntakeAlgae(coralAlgaeSubsystem, 1))
-                .whileFalse(new IntakeAlgae(coralAlgaeSubsystem, 0));
-
-        buttonBoard.button(stowButton).onTrue(new Stow(coralAlgaeSubsystem, elevatorSubsystem)).debounce(0.3)
-                .whileTrue(new ResetElevator(elevatorSubsystem, coralAlgaeSubsystem).andThen(new WaitCommand(0.75).andThen(new InstantCommand(() -> elevatorSubsystem.zeroElevatorPosition()))));
-
-
-        driverController.button(driverRightAlign)
-                .onTrue(new DeferredCommand(() -> swerveSubsystem.rightAutoAlign(), Set.of(swerveSubsystem)));
-        driverController.button(driverLeftAlign)
-                .onTrue(new DeferredCommand(() -> swerveSubsystem.leftAutoAlign(), Set.of(swerveSubsystem)));
-
-        // swerve logic
-        // (Condition) ? Return-On-True : Return-on-False
-        swerveSubsystem.setDefaultCommand(
-                !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedAnglularVelocitySim);
-
-        if (Robot.isSimulation()) {
-            // driverController.start().onTrue(Commands.runOnce(() ->
-            // swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-            driverController.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
-
+                configureBindings();
+                DriverStation.silenceJoystickConnectionWarning(true);
         }
-    }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return autoChooser.getSelected();
-    }
+        /**
+         * Use this method to define your trigger->command mappings. Triggers can be
+         * created via the
+         * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+         * an arbitrary predicate, or via the
+         * named factories in
+         * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
+         * for
+         * {@link CommandXboxController
+         * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+         * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
+         * Flight joysticks}.
+         */
+        private void configureBindings() {
 
-    public void setMotorBrake(boolean brake) {
-        swerveSubsystem.setMotorBrake(brake);
-    }
+                new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
 
-    public void updateDashboard() {
-        SmartDashboard.putBoolean("Coral Mode", coralAlgaeSubsystem.coralMode);
-        // field.setRobotPose(Vision.getAprilTagPose(18, new Transform2d(0, 0, new
-        // Rotation2d(0))));
-        // SmartDashboard.putBoolean("coral score is true",
-        // coralAlgaeSubsystem.pidWithinBounds(CoralPivotPositions.CoralStation.L4,
-        // 0.05, 1));
-        SmartDashboard.putNumber("Back motor percent", elevatorSubsystem.getBackElevatorSpeed());
-        SmartDashboard.putNumber("Coral Pivot Position", coralAlgaeSubsystem.getPivotPosition());
-        // SmartDashboard.putNumber("Front Elevator Position",
-        // elevatorSubsystem.getFrontElevatorMotorEncoder());
-        // SmartDashboard.putNumber("Back Elevator Position",
-        // elevatorSubsystem.getBackElevatorMotorEncoder());
-        SmartDashboard.putBoolean("is Front Limit Switch enabled", elevatorSubsystem.getFrontElevatorLimitSwitch());
-        SmartDashboard.putBoolean("is Back Limit Switch enabled", elevatorSubsystem.getBackElevatorLimitSwitch());
-        SmartDashboard.putNumber("Elevator Position Enc", elevatorSubsystem.getElevatorPosition());
-        SmartDashboard.putNumber("Elevator Position Inch", elevatorSubsystem.encoderToInch());
-        // SmartDashboard.putNumber("Difference in velocity",
-        // elevatorSubsystem.differenceInVelocity());
-        SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValue());
-        SmartDashboard.putBoolean("coral break beam", coralAlgaeSubsystem.getCoralSensor());
+                // new Trigger(() -> buttonBoard.getX() > 0.5).onTrue(new InstantCommand(() ->
+                // elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
+                // new Trigger(() -> buttonBoard.getX() < 0.5).onTrue(new InstantCommand(() ->
+                // elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
+                // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() ->
+                // elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1)).andThen(new
+                // InstantCommand(() ->
+                // elevatorSubsystem.bumbPIDPosition()).withTimeout(0.2))));
+                // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() ->
+                // elevatorSubsystem.addSubtractManualOffset(L1Button);))
+                buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem
+                                .addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
+                buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem
+                                .addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
 
-        SmartDashboard.putNumber("left climber position", climberSubsystem.leftClimbMotorPosition());
-        SmartDashboard.putNumber("right climber position", climberSubsystem.rightClimbMotorPosition());
+                buttonBoard.button(coralAlgaeSelector)
+                                .onTrue(new InstantCommand(
+                                                () -> coralAlgaeSubsystem
+                                                                .setCoralIntakeMode(!coralAlgaeSubsystem.coralMode)))
+                                .debounce(1);
 
-        SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
-        SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
-        SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
-    }
+                buttonBoard.button(L4Button).onTrue(new ConditionalCommand(
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
+                                                ElevatorPositions.L4),
+                                new BargeScore(coralAlgaeSubsystem, elevatorSubsystem),
+                                () -> coralAlgaeSubsystem.coralMode));
 
-    public void resetPIDControllers() {
-        elevatorSubsystem.resetPIDController();
-        coralAlgaeSubsystem.resetPIDController();
-    }
+                buttonBoard.button(L3Button).onTrue(new ConditionalCommand(
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
+                                                ElevatorPositions.L3),
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
+                                                elevatorSubsystem,
+                                                ElevatorPositions.AlgaeReefHigh),
+                                () -> coralAlgaeSubsystem.coralMode));
 
-    public boolean isCoralIntakeMode(){
-        return coralAlgaeSubsystem.coralMode;
-    }
+                buttonBoard.button(L2Button).onTrue(new ConditionalCommand(
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
+                                                ElevatorPositions.L2),
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
+                                                elevatorSubsystem,
+                                                ElevatorPositions.AlgaeReefLow),
+                                () -> coralAlgaeSubsystem.coralMode));
+
+                buttonBoard.button(L1Button).onTrue(new ConditionalCommand(
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
+                                                ElevatorPositions.L2),
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
+                                                elevatorSubsystem, ElevatorPositions.Processor),
+                                () -> coralAlgaeSubsystem.coralMode));
+
+                buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralMode)
+                                .onTrue(new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem));
+
+                buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralMode)
+                                .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
+                                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.75))
+                                .onFalse(new SequentialCommandGroup(new WaitCommand(1),
+                                                new Stow(coralAlgaeSubsystem, elevatorSubsystem)));
+
+                buttonBoard.button(coralIntakeButton).and(() -> coralAlgaeSubsystem.coralMode)
+                                .onTrue(new CoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
+
+                buttonBoard.button(coralIntakeButton).and(() -> !coralAlgaeSubsystem.coralMode)
+                                .whileTrue(new IntakeAlgae(coralAlgaeSubsystem, 1))
+                                .whileFalse(new IntakeAlgae(coralAlgaeSubsystem, 0));
+
+                buttonBoard.button(stowButton).onTrue(new Stow(coralAlgaeSubsystem, elevatorSubsystem)).debounce(0.3)
+                                .whileTrue(new ResetElevator(elevatorSubsystem, coralAlgaeSubsystem)
+                                                .andThen(new WaitCommand(0.75).andThen(new InstantCommand(
+                                                                () -> elevatorSubsystem.zeroElevatorPosition()))));
+
+                driverController.button(driverRightAlign)
+                                .onTrue(new DeferredCommand(() -> swerveSubsystem.rightAutoAlign(),
+                                                Set.of(swerveSubsystem)));
+                driverController.button(driverLeftAlign)
+                                .onTrue(new DeferredCommand(() -> swerveSubsystem.leftAutoAlign(),
+                                                Set.of(swerveSubsystem)));
+
+                // swerve logic
+                // (Condition) ? Return-On-True : Return-on-False
+                swerveSubsystem.setDefaultCommand(
+                                !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity
+                                                : driveFieldOrientedAnglularVelocitySim);
+
+                if (Robot.isSimulation()) {
+                        // driverController.start().onTrue(Commands.runOnce(() ->
+                        // swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+                        driverController.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
+
+                }
+        }
+
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
+                // An example command will be run in autonomous
+                return autoChooser.getSelected();
+        }
+
+        public void setMotorBrake(boolean brake) {
+                swerveSubsystem.setMotorBrake(brake);
+        }
+
+        public void updateDashboard() {
+                SmartDashboard.putBoolean("Coral Mode", coralAlgaeSubsystem.coralMode);
+                // field.setRobotPose(Vision.getAprilTagPose(18, new Transform2d(0, 0, new
+                // Rotation2d(0))));
+                // SmartDashboard.putBoolean("coral score is true",
+                // coralAlgaeSubsystem.pidWithinBounds(CoralPivotPositions.CoralStation.L4,
+                // 0.05, 1));
+                SmartDashboard.putNumber("Back motor percent", elevatorSubsystem.getBackElevatorSpeed());
+                SmartDashboard.putNumber("Coral Pivot Position", coralAlgaeSubsystem.getPivotPosition());
+                // SmartDashboard.putNumber("Front Elevator Position",
+                // elevatorSubsystem.getFrontElevatorMotorEncoder());
+                // SmartDashboard.putNumber("Back Elevator Position",
+                // elevatorSubsystem.getBackElevatorMotorEncoder());
+                SmartDashboard.putBoolean("is Front Limit Switch enabled",
+                                elevatorSubsystem.getFrontElevatorLimitSwitch());
+                SmartDashboard.putBoolean("is Back Limit Switch enabled",
+                                elevatorSubsystem.getBackElevatorLimitSwitch());
+                SmartDashboard.putNumber("Elevator Position Enc", elevatorSubsystem.getElevatorPosition());
+                SmartDashboard.putNumber("Elevator Position Inch", elevatorSubsystem.encoderToInch());
+                // SmartDashboard.putNumber("Difference in velocity",
+                // elevatorSubsystem.differenceInVelocity());
+                SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValue());
+                SmartDashboard.putBoolean("coral break beam", coralAlgaeSubsystem.getCoralSensor());
+
+                SmartDashboard.putNumber("left climber position", climberSubsystem.leftClimbMotorPosition());
+                SmartDashboard.putNumber("right climber position", climberSubsystem.rightClimbMotorPosition());
+
+                SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
+                SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
+                SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
+        }
+
+        public void resetPIDControllers() {
+                elevatorSubsystem.resetPIDController();
+                coralAlgaeSubsystem.resetPIDController();
+        }
+
+        public boolean isCoralIntakeMode() {
+                return coralAlgaeSubsystem.coralMode;
+        }
 }

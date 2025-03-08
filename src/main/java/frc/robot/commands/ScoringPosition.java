@@ -13,7 +13,8 @@ public class ScoringPosition extends Command {
     ElevatorSubsystem elevatorSubsystem;
     ElevatorPositions elevatorPosition;
 
-    public ScoringPosition(CoralAlgaeSubsystem coralSubsystem, CoralPivotPositions coralPivotPositions, ElevatorSubsystem elevatorSubsystem, ElevatorPositions elevatorPosition) {
+    public ScoringPosition(CoralAlgaeSubsystem coralSubsystem, CoralPivotPositions coralPivotPositions,
+            ElevatorSubsystem elevatorSubsystem, ElevatorPositions elevatorPosition) {
         this.coralSubsystem = coralSubsystem;
         this.coralPivotPositions = coralPivotPositions;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -27,33 +28,34 @@ public class ScoringPosition extends Command {
     }
 
     @Override
-    public void execute() {}
+    public void execute() {
+    }
 
     @Override
     public void end(boolean interrupted) {
         // switch (elevatorSubsystem.getElevatorTarget()) {
-        //     case L4:
-        //         coralSubsystem.setPIDPosition(CoralPivotPositions.L4);
-        //     case L3:
-        //         coralSubsystem.setPIDPosition(CoralPivotPositions.L3);
-        //     case L2:
-        //         coralSubsystem.setPIDPosition(CoralPivotPositions.L2);
-        //     case L1:
-        //         coralSubsystem.setPIDPosition(CoralPivotPositions.L1);
-        //     default:
-        //         coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
+        // case L4:
+        // coralSubsystem.setPIDPosition(CoralPivotPositions.L4);
+        // case L3:
+        // coralSubsystem.setPIDPosition(CoralPivotPositions.L3);
+        // case L2:
+        // coralSubsystem.setPIDPosition(CoralPivotPositions.L2);
+        // case L1:
+        // coralSubsystem.setPIDPosition(CoralPivotPositions.L1);
+        // default:
+        // coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
         // }
         // try {
-        //     wait(1000);
+        // wait(1000);
         // } catch (InterruptedException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
         // }
         coralSubsystem.setPIDPosition(coralPivotPositions);
     }
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.encoderToInch() > 0.9*elevatorPosition.getValue();
+        return elevatorSubsystem.encoderToInch() > 0.9 * elevatorPosition.getValue();
     }
 }

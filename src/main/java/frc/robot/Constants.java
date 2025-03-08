@@ -51,13 +51,13 @@ public final class Constants {
     public static final double TURN_CONSTANT = 6;
   }
 
-  public static class reefAlignmentConstants{
+  public static class reefAlignmentConstants {
     public static final double reefSpacing = 0.1643126;
     public static final double robotWidth = Units.inchesToMeters(37.25 + 5);
     public static final double coralScoreOffset = Units.inchesToMeters(2.5);
   }
 
-  public enum reefScoreLocation{
+  public enum reefScoreLocation {
     LEFT,
     RIGHT,
     ALGAE

@@ -49,16 +49,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         public double getValue() {
             // return .000130994x^{4}-.0067331x^{3}+.118148x^{2}+2.30416x+8;
-            // return 
-            // 0.000000723783*Math.pow(value, 4) 
-            // -0.000158195*Math.pow(value, 3) 
-            //     +0.0113236*Math.pow(value, 2) 
-            //     +0.0272627*value 
-            //     +0;
-            return 0.329911*value - 1.92945;
+            // return
+            // 0.000000723783*Math.pow(value, 4)
+            // -0.000158195*Math.pow(value, 3)
+            // +0.0113236*Math.pow(value, 2)
+            // +0.0272627*value
+            // +0;
+            return 0.329911 * value - 1.92945;
         }
 
-        public double getValueInches(){
+        public double getValueInches() {
             return value;
         }
     }
@@ -109,7 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    public double getBackElevatorSpeed(){
+    public double getBackElevatorSpeed() {
         return backElevatorMotor.get();
     }
 
@@ -125,7 +125,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return throughBoreEncoder.getPosition();
     }
 
-    public double getElevatorVelocity(){
+    public double getElevatorVelocity() {
         return throughBoreEncoder.getVelocity();
     }
 
@@ -138,7 +138,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorPID.setReference(position.getValue() + getManualOffset(), ControlType.kPosition);
     }
 
-    public void bumbPIDPosition(){
+    public void bumbPIDPosition() {
         backElevatorMotorPID.setReference(targetElevatorPosition.getValue() + getManualOffset(), ControlType.kPosition);
     }
 
@@ -162,7 +162,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         double upperbound = position.getValue() + positionTolerance;
         double lowerbound = position.getValue() - positionTolerance;
         boolean withinPosition = getElevatorPosition() <= upperbound && getElevatorPosition() >= lowerbound;
-        boolean withinVelocity = getElevatorVelocity() <= Math.abs(velocityTolerance) && getElevatorVelocity() >= -Math.abs(velocityTolerance);
+        boolean withinVelocity = getElevatorVelocity() <= Math.abs(velocityTolerance)
+                && getElevatorVelocity() >= -Math.abs(velocityTolerance);
         return (withinPosition && withinVelocity);
     }
 
@@ -170,50 +171,49 @@ public class ElevatorSubsystem extends SubsystemBase {
         throughBoreEncoder.setPosition(0);
     }
 
-    public void resetPIDController(){
+    public void resetPIDController() {
         backElevatorMotor.set(0);
         frontElevatorMotor.set(0);
     }
-    
-    public double encoderToInch(){
+
+    public double encoderToInch() {
         // return 2.98857 * getElevatorPosition() + 7.62804;
-        // return 
-        //     0.000130884*Math.pow(getElevatorPosition(), 4) 
-        //     -0.0067331*Math.pow(getElevatorPosition(), 3) 
-        //     +0.118148*Math.pow(getElevatorPosition(), 2) 
-        //     +2.30416*getElevatorPosition() 
-        //     +8;
+        // return
+        // 0.000130884*Math.pow(getElevatorPosition(), 4)
+        // -0.0067331*Math.pow(getElevatorPosition(), 3)
+        // +0.118148*Math.pow(getElevatorPosition(), 2)
+        // +2.30416*getElevatorPosition()
+        // +8;
         return 2.91627 * getElevatorPosition() + 8;
     }
 
-    public double inchToEncoder(){
-        return 
-            0.000000723783*Math.pow(getElevatorPosition(), 4) 
-            -0.000158195*Math.pow(getElevatorPosition(), 3) 
-                +0.0113236*Math.pow(getElevatorPosition(), 2) 
-                +0.0272627*getElevatorPosition() 
-                +0;
+    public double inchToEncoder() {
+        return 0.000000723783 * Math.pow(getElevatorPosition(), 4)
+                - 0.000158195 * Math.pow(getElevatorPosition(), 3)
+                + 0.0113236 * Math.pow(getElevatorPosition(), 2)
+                + 0.0272627 * getElevatorPosition()
+                + 0;
     }
 
-    public double inchToEncoderConverter(double inches){
-        // return 
-        //     0.000000723783*Math.pow(inches, 4) 
-        //     -0.000158195*Math.pow(inches, 3) 
-        //         +0.0113236*Math.pow(inches, 2) 
-        //         +0.0272627*inches 
-        //         +0;
-        return 0.329911*inches - 1.92945;
+    public double inchToEncoderConverter(double inches) {
+        // return
+        // 0.000000723783*Math.pow(inches, 4)
+        // -0.000158195*Math.pow(inches, 3)
+        // +0.0113236*Math.pow(inches, 2)
+        // +0.0272627*inches
+        // +0;
+        return 0.329911 * inches - 1.92945;
     }
 
-    public void setManualOffset(double manualOffset){
+    public void setManualOffset(double manualOffset) {
         this.manualOffset = manualOffset;
     }
 
-    public void addSubtractManualOffset(double addSubstract){
+    public void addSubtractManualOffset(double addSubstract) {
         manualOffset += addSubstract;
     }
 
-    public double getManualOffset(){
+    public double getManualOffset() {
         return manualOffset;
     }
 }

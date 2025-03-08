@@ -22,11 +22,11 @@ public class ManualElevator extends Command {
     @Override
     public void execute() {
 
-        if(elevatorSubsystem.getFrontElevatorLimitSwitch() && -speed.getAsDouble() < 0){
+        if (elevatorSubsystem.getFrontElevatorLimitSwitch() && -speed.getAsDouble() < 0) {
             elevatorSubsystem.setElevatorSpeed(0);
         }
 
-        else{
+        else {
             elevatorSubsystem.setElevatorSpeed(-speed.getAsDouble());
         }
     }
