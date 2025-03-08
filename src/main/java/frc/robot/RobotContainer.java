@@ -52,13 +52,9 @@ import edu.wpi.first.wpilibj2.command.DeferredCommand;
 public class RobotContainer {
         SendableChooser<Command> autoChooser = new SendableChooser<>();
         Field2d field = new Field2d();
-
-        // public final LEDSubsystem ledSubsystem = new LEDSubsystem();
         private final CoralAlgaeSubsystem coralAlgaeSubsystem = new CoralAlgaeSubsystem();
         private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
         private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-        // private CommandJoystick testJoystick = new CommandJoystick(1);
-        // private CommandJoystick testCoralJoystick = new CommandJoystick(2);
         private CommandJoystick buttonBoard = new CommandJoystick(1);
         final CommandXboxController driverController = new CommandXboxController(0);
         private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -66,14 +62,11 @@ public class RobotContainer {
 
         private int driverLeftAlign = 1;
         private int driverRightAlign = 2;
-
         private int L1Button = 9;
         private int L2Button = 8;
         private int L3Button = 5;
         private int L4Button = 1;
-
         private int disableAutoButton = 2;
-
         private int leftOffsetButton = 10;
         private int rightOffsetButton = 11;
         private int coralIntakeButton = 6;
@@ -201,16 +194,6 @@ public class RobotContainer {
 
                 new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
 
-                // new Trigger(() -> buttonBoard.getX() > 0.5).onTrue(new InstantCommand(() ->
-                // elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
-                // new Trigger(() -> buttonBoard.getX() < 0.5).onTrue(new InstantCommand(() ->
-                // elevatorSubsystem.addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
-                // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() ->
-                // elevatorSubsystem.addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1)).andThen(new
-                // InstantCommand(() ->
-                // elevatorSubsystem.bumbPIDPosition()).withTimeout(0.2))));
-                // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() ->
-                // elevatorSubsystem.addSubtractManualOffset(L1Button);))
                 buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem
                                 .addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
                 buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem
@@ -309,31 +292,18 @@ public class RobotContainer {
 
         public void updateDashboard() {
                 SmartDashboard.putBoolean("Coral Mode", coralAlgaeSubsystem.coralMode);
-                // field.setRobotPose(Vision.getAprilTagPose(18, new Transform2d(0, 0, new
-                // Rotation2d(0))));
-                // SmartDashboard.putBoolean("coral score is true",
-                // coralAlgaeSubsystem.pidWithinBounds(CoralPivotPositions.CoralStation.L4,
-                // 0.05, 1));
                 SmartDashboard.putNumber("Back motor percent", elevatorSubsystem.getBackElevatorSpeed());
                 SmartDashboard.putNumber("Coral Pivot Position", coralAlgaeSubsystem.getPivotPosition());
-                // SmartDashboard.putNumber("Front Elevator Position",
-                // elevatorSubsystem.getFrontElevatorMotorEncoder());
-                // SmartDashboard.putNumber("Back Elevator Position",
-                // elevatorSubsystem.getBackElevatorMotorEncoder());
                 SmartDashboard.putBoolean("is Front Limit Switch enabled",
                                 elevatorSubsystem.getFrontElevatorLimitSwitch());
                 SmartDashboard.putBoolean("is Back Limit Switch enabled",
                                 elevatorSubsystem.getBackElevatorLimitSwitch());
                 SmartDashboard.putNumber("Elevator Position Enc", elevatorSubsystem.getElevatorPosition());
                 SmartDashboard.putNumber("Elevator Position Inch", elevatorSubsystem.encoderToInch());
-                // SmartDashboard.putNumber("Difference in velocity",
-                // elevatorSubsystem.differenceInVelocity());
                 SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValue());
                 SmartDashboard.putBoolean("coral break beam", coralAlgaeSubsystem.getCoralSensor());
-
                 SmartDashboard.putNumber("left climber position", climberSubsystem.leftClimbMotorPosition());
                 SmartDashboard.putNumber("right climber position", climberSubsystem.rightClimbMotorPosition());
-
                 SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
                 SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
                 SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
