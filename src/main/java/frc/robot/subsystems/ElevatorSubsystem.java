@@ -75,7 +75,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         backElevatorMotorConfig.softLimit
                 .forwardSoftLimit(ElevatorPositions.MaxHeight.getValue())
-                .forwardSoftLimitEnabled(true);
+                .forwardSoftLimitEnabled(false);
 
         backElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
@@ -199,5 +199,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public double getManualOffset() {
         return manualOffset;
+    }
+
+    public double getFrontElevatorCurrent(){
+        return frontElevatorMotor.getOutputCurrent();
+    }
+
+    public double getBackElevatorCurrent(){
+        return backElevatorMotor.getOutputCurrent();
     }
 }

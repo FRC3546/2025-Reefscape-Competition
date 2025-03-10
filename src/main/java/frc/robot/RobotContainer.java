@@ -40,6 +40,7 @@ import frc.robot.commands.CoralAlgaeCommands.IntakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeCoral;
 import frc.robot.commands.ManualCommands.ManualClimb;
+import frc.robot.commands.ManualCommands.ManualElevator;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -57,6 +58,7 @@ public class RobotContainer {
         private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
         private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
         private CommandJoystick buttonBoard = new CommandJoystick(1);
+        private CommandJoystick testJoystick = new CommandJoystick(2);
         final CommandXboxController driverController = new CommandXboxController(0);
         private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                         "swerve"));
@@ -206,6 +208,13 @@ public class RobotContainer {
                                                                 .setCoralIntakeMode(!coralAlgaeSubsystem.coralMode)))
                                 .debounce(1);
 
+                buttonBoard.button(disableAutoButton)
+                                .toggleOnTrue(new InstantCommand(() -> swerveSubsystem
+                                                .setAutoControl(!swerveSubsystem.autoControlEnabled)));
+                
+                buttonBoard.button(disableAutoButton).and(() -> (swerveSubsystem.autoControlEnabled == false))
+                        .toggleOnTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro()));
+
                 buttonBoard.button(L4Button).onTrue(new ConditionalCommand(
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
                                                 ElevatorPositions.L4),
@@ -267,6 +276,8 @@ public class RobotContainer {
                                                                 .leftAutoAlign(elevatorSubsystem.getElevatorTarget()),
                                                 Set.of(swerveSubsystem)));
 
+                elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (0.5*testJoystick.getY())));
+
                 // swerve logic
                 // (Condition) ? Return-On-True : Return-on-False
                 swerveSubsystem.setDefaultCommand(
@@ -312,6 +323,10 @@ public class RobotContainer {
                 SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
                 SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
                 SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
+                SmartDashboard.putBoolean("Auto enabled", swerveSubsystem.autoControlEnabled);
+                SmartDashboard.putNumber("front elevator current", elevatorSubsystem.getFrontElevatorCurrent());
+                SmartDashboard.putNumber("back elevator current", elevatorSubsystem.getBackElevatorCurrent());
+
         }
 
         public void resetPIDControllers() {

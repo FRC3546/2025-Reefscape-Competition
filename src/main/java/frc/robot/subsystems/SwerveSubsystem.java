@@ -59,6 +59,9 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
+  // defaults to true
+  // when false, camera does not update odometry and gyro is zeroed
+  public boolean autoControlEnabled = true;
 
   /**
    * Swerve drive object.
@@ -146,7 +149,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest) {
+    if (visionDriveTest && autoControlEnabled) {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
     }
@@ -863,5 +866,9 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
+  }
+
+  public void setAutoControl(boolean autoControlEnabled){
+    this.autoControlEnabled = autoControlEnabled;
   }
 }
