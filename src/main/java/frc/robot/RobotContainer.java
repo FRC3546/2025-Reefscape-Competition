@@ -276,7 +276,7 @@ public class RobotContainer {
                                                                 .leftAutoAlign(elevatorSubsystem.getElevatorTarget()),
                                                 Set.of(swerveSubsystem)));
 
-                elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (0.5*testJoystick.getY())));
+                elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (0.75*testJoystick.getY())));
 
                 // swerve logic
                 // (Condition) ? Return-On-True : Return-on-False
