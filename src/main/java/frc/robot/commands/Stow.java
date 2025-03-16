@@ -19,7 +19,7 @@ public class Stow extends Command {
 
     @Override
     public void initialize() {
-        if(coralSubsystem.coralMode == false){
+        if(coralSubsystem.coralIntaking == false){
             elevatorSubsystem.setPIDPosition(ElevatorPositions.AlgaeReefLow);
             coralSubsystem.setPIDPosition(CoralPivotPositions.AlgaeReef);
         }

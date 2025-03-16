@@ -208,7 +208,7 @@ public class RobotContainer {
                 buttonBoard.button(coralAlgaeSelector)
                                 .onTrue(new InstantCommand(
                                                 () -> coralAlgaeSubsystem
-                                                                .setCoralIntakeMode(!coralAlgaeSubsystem.coralMode)))
+                                                                .setCoralIntakeMode(!coralAlgaeSubsystem.coralIntaking)))
                                 .debounce(1);
 
                 buttonBoard.button(disableAutoButton)
@@ -222,7 +222,7 @@ public class RobotContainer {
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
                                                 ElevatorPositions.L4),
                                 new BargeScore(coralAlgaeSubsystem, elevatorSubsystem),
-                                () -> coralAlgaeSubsystem.coralMode));
+                                () -> coralAlgaeSubsystem.coralIntaking));
 
                 buttonBoard.button(L3Button).onTrue(new ConditionalCommand(
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
@@ -230,7 +230,7 @@ public class RobotContainer {
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
                                                 elevatorSubsystem,
                                                 ElevatorPositions.AlgaeReefHigh),
-                                () -> coralAlgaeSubsystem.coralMode));
+                                () -> coralAlgaeSubsystem.coralIntaking));
 
                 buttonBoard.button(L2Button).onTrue(new ConditionalCommand(
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
@@ -238,29 +238,29 @@ public class RobotContainer {
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
                                                 elevatorSubsystem,
                                                 ElevatorPositions.AlgaeReefLow),
-                                () -> coralAlgaeSubsystem.coralMode));
+                                () -> coralAlgaeSubsystem.coralIntaking));
 
                 buttonBoard.button(L1Button).onTrue(new ConditionalCommand(
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
                                                 ElevatorPositions.L2),
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
                                                 elevatorSubsystem, ElevatorPositions.Processor),
-                                () -> coralAlgaeSubsystem.coralMode));
+                                () -> coralAlgaeSubsystem.coralIntaking));
 
-                buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralMode)
+                buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralIntaking)
                                 .onTrue(new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem));
 
-                buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralMode)
+                buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralIntaking)
                                 .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
                                 .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.75))
                                 .onFalse(new SequentialCommandGroup(new WaitCommand(1),
                                                 new Stow(coralAlgaeSubsystem, elevatorSubsystem)));
 
-                buttonBoard.button(coralIntakeButton).and(() -> coralAlgaeSubsystem.coralMode)
+                buttonBoard.button(coralIntakeButton).and(() -> coralAlgaeSubsystem.coralIntaking)
                                 .onTrue(new CoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
 
-                buttonBoard.button(coralIntakeButton).and(() -> !coralAlgaeSubsystem.coralMode)
-                                .whileTrue(new IntakeAlgae(coralAlgaeSubsystem, 1))
+                buttonBoard.button(coralIntakeButton).and(() -> !coralAlgaeSubsystem.coralIntaking)
+                                .whileTrue(new IntakeAlgae(coralAlgaeSubsystem, 0.7))
                                 .whileFalse(new IntakeAlgae(coralAlgaeSubsystem, 0));
 
                 buttonBoard.button(stowButton).onTrue(new Stow(coralAlgaeSubsystem, elevatorSubsystem)).debounce(0.3)
@@ -309,7 +309,7 @@ public class RobotContainer {
         }
 
         public void updateDashboard() {
-                SmartDashboard.putBoolean("Coral Mode", coralAlgaeSubsystem.coralMode);
+                SmartDashboard.putBoolean("Coral Mode", coralAlgaeSubsystem.coralIntaking);
                 SmartDashboard.putNumber("Back motor percent", elevatorSubsystem.getBackElevatorSpeed());
                 SmartDashboard.putNumber("Coral Pivot Position", coralAlgaeSubsystem.getPivotPosition());
                 SmartDashboard.putBoolean("is Front Limit Switch enabled",
@@ -317,7 +317,7 @@ public class RobotContainer {
                 SmartDashboard.putBoolean("is Back Limit Switch enabled",
                                 elevatorSubsystem.getBackElevatorLimitSwitch());
                 SmartDashboard.putNumber("Elevator Position Enc", elevatorSubsystem.getElevatorPosition());
-                SmartDashboard.putNumber("internal intake", coralAlgaeSubsystem.getInternalPivotEncoder());
+                // SmartDashboard.putNumber("internal intake", coralAlgaeSubsystem.getInternalPivotEncoder());
                 // SmartDashboard.putNumber("Elevator Position Inch", elevatorSubsystem.encoderToInch());
                 SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValueRotations());
                 SmartDashboard.putBoolean("coral break beam", coralAlgaeSubsystem.getCoralSensor());
@@ -337,9 +337,9 @@ public class RobotContainer {
                 coralAlgaeSubsystem.resetPIDController();
         }
 
-        public boolean isCoralIntakeMode() {
-                return coralAlgaeSubsystem.coralMode;
-        }
+        // public boolean isCoralIntakeMode() {
+        //         return coralAlgaeSubsystem.coralMode;
+        // }
 
         public void updateElevatorTargetPosition() {
                 targetElevatorPosition = elevatorSubsystem.getTargetElevatorPosition();

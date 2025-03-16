@@ -58,6 +58,6 @@ public class ScoringPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.getElevatorPosition() > 0.75 * elevatorPosition.getValueRotations();
+        return elevatorSubsystem.getElevatorPosition() > 0.4 * elevatorPosition.getValueRotations();
     }
 }

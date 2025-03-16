@@ -23,24 +23,20 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
     private SparkClosedLoopController pivotMotorPID;
     private SparkMaxConfig pivotMotorConfig;
     private SparkMaxConfig intakeMotorConfig;
-    // when coralMode true, intake and score for coral
-    // when coralMode flase, intake and score for algae
-    public boolean coralMode = true;
-
-    // .7199
+    public boolean coralIntaking = true;
+    //.7199
     public enum CoralPivotPositions {
         // increases moving towards the front
-        L1(0.537),
+        L1(0.72 + 0.021),
         L2(0.72 + 0.021),
-        L3(0.021),
-        L4(0.751 + 0.021),
+        L3(0.72 + 0.021),
+        L4(0.748 + 0.021),
         AlgaeReef(0.477),
         Barge(0.477),
         Stow(0.256 + 0.021),
         CoralStation(.215 + 0.021),
         MinimumAngle(.5),
         MaximumAngle(.5);
-
         private final double value;
 
         CoralPivotPositions(double value) {
@@ -59,31 +55,30 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         coralSensor = intakeMotor.getForwardLimitSwitch();
         intakeMotorConfig = new SparkMaxConfig();
         pivotMotorConfig = new SparkMaxConfig();
-        throughBoreEncoder = pivotMotor.getAbsoluteEncoder();
         pivotMotorPID = pivotMotor.getClosedLoopController();
-
-        
+        throughBoreEncoder = pivotMotor.getAbsoluteEncoder();
 
         intakeMotorConfig
-                .inverted(true)
-                .idleMode(IdleMode.kBrake);
+            .inverted(true)
+            .idleMode(IdleMode.kBrake);
 
         intakeMotorConfig.limitSwitch
-                .forwardLimitSwitchEnabled(false);
+            .forwardLimitSwitchEnabled(false);
 
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .p(1)
+                .p(7)
                 .i(0)
-                .d(0)
-                .maxOutput(0.75)
-                .minOutput(-0.75);
+                .d(3)
+                .maxOutput(1)
+                .minOutput(-1);
 
+        
         pivotMotorConfig
                 .inverted(true)
                 .smartCurrentLimit(40)
                 .idleMode(IdleMode.kBrake);
-
+        
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotMotor.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -112,7 +107,7 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         intakeMotor.stopMotor();
     }
 
-    public boolean getCoralSensor() {
+    public boolean getCoralSensor(){
         return coralSensor.isPressed();
     }
 
@@ -120,40 +115,31 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 
-    public double getInternalPivotEncoder(){
-        return pivotMotor.getEncoder().getPosition();
-    }
-
-    // public boolean pidWithinBounds(CoralPivotPositions position, double
-    // positionTolerance, double velocityTolerance) {
-    // double upperbound = position.getValue() + positionTolerance;
-    // double lowerbound = position.getValue() - positionTolerance;
-    // boolean withinPosition = getPivotPosition() <= upperbound &&
-    // getPivotPosition() >= lowerbound;
-    // boolean withinVelocity = getPivotVelocity() <= Math.abs(velocityTolerance) &&
-    // getPivotVelocity() >= -Math.abs(velocityTolerance);
-    // return (withinPosition && withinVelocity);
+    // public boolean pidWithinBounds(CoralPivotPositions position, double positionTolerance, double velocityTolerance) {
+    //     double upperbound = position.getValue() + positionTolerance;
+    //     double lowerbound = position.getValue() - positionTolerance;
+    //     boolean withinPosition = getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound;
+    //     boolean withinVelocity = getPivotVelocity() <= Math.abs(velocityTolerance) && getPivotVelocity() >= -Math.abs(velocityTolerance);
+    //     return (withinPosition && withinVelocity);
     // }
 
     public boolean pidWithinBounds(CoralPivotPositions position, double positionTolerance, double velocityTolerance) {
         double upperbound = position.getValue() + positionTolerance;
         double lowerbound = position.getValue() - positionTolerance;
         boolean withinPosition = getPivotPosition() <= upperbound && getPivotPosition() >= lowerbound;
-        boolean withinVelocity = getPivotVelocity() <= Math.abs(velocityTolerance)
-                && getPivotVelocity() >= -Math.abs(velocityTolerance);
+        boolean withinVelocity = getPivotVelocity() <= Math.abs(velocityTolerance) && getPivotVelocity() >= -Math.abs(velocityTolerance);
         return (withinPosition && withinVelocity);
     }
 
-    public void resetPIDController() {
+    public void resetPIDController(){
         pivotMotor.set(0);
     }
 
-    public void setCoralIntakeMode(boolean coralMode) {
-        this.coralMode = coralMode;
+    public void setCoralIntakeMode(boolean coralIntake){
+        coralIntaking = coralIntake;
     }
 
-    public double getAlgaeCurrent() {
+    public double getAlgaeCurrent(){
         return intakeMotor.getOutputCurrent();
     }
-
 }
