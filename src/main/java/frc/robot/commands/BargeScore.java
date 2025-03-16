@@ -37,6 +37,6 @@ public class BargeScore extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.encoderToInch() > 85;
+        return elevatorSubsystem.getElevatorPosition() > 0.95 * elevatorPosition.getValueRotations();
     }
 }

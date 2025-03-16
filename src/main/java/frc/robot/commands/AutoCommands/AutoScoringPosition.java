@@ -55,6 +55,6 @@ public class AutoScoringPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.encoderToInch() > 40;
+        return elevatorSubsystem.getElevatorPosition() > 0.5*elevatorPosition.getValueRotations();
     }
 }

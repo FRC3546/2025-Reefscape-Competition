@@ -31,13 +31,13 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
     public enum CoralPivotPositions {
         // increases moving towards the front
         L1(0.537),
-        L2(0.72),
-        L3(0.72),
-        L4(0.743 + 0.008),
-        AlgaeReef(0.5),
-        Barge(0.4),
-        Stow(0.256),
-        CoralStation(.215),
+        L2(0.72 + 0.021),
+        L3(0.021),
+        L4(0.751 + 0.021),
+        AlgaeReef(0.477),
+        Barge(0.477),
+        Stow(0.256 + 0.021),
+        CoralStation(.215 + 0.021),
         MinimumAngle(.5),
         MaximumAngle(.5);
 
@@ -59,8 +59,10 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         coralSensor = intakeMotor.getForwardLimitSwitch();
         intakeMotorConfig = new SparkMaxConfig();
         pivotMotorConfig = new SparkMaxConfig();
-        pivotMotorPID = pivotMotor.getClosedLoopController();
         throughBoreEncoder = pivotMotor.getAbsoluteEncoder();
+        pivotMotorPID = pivotMotor.getClosedLoopController();
+
+        
 
         intakeMotorConfig
                 .inverted(true)
@@ -71,9 +73,9 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
 
         pivotMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .p(7)
+                .p(1)
                 .i(0)
-                .d(3)
+                .d(0)
                 .maxOutput(0.75)
                 .minOutput(-0.75);
 
@@ -118,6 +120,10 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         pivotMotorPID.setReference(position.getValue(), ControlType.kPosition);
     }
 
+    public double getInternalPivotEncoder(){
+        return pivotMotor.getEncoder().getPosition();
+    }
+
     // public boolean pidWithinBounds(CoralPivotPositions position, double
     // positionTolerance, double velocityTolerance) {
     // double upperbound = position.getValue() + positionTolerance;
@@ -149,4 +155,5 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
     public double getAlgaeCurrent() {
         return intakeMotor.getOutputCurrent();
     }
+
 }

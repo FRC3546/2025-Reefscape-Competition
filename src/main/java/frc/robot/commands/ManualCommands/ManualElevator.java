@@ -24,6 +24,7 @@ public class ManualElevator extends Command {
 
         if (elevatorSubsystem.getFrontElevatorLimitSwitch() && -speed.getAsDouble() < 0) {
             elevatorSubsystem.setElevatorSpeed(0);
+            elevatorSubsystem.zeroElevatorPosition();
         }
 
         else {

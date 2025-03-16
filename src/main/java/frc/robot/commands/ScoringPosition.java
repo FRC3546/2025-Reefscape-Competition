@@ -25,6 +25,8 @@ public class ScoringPosition extends Command {
     @Override
     public void initialize() {
         elevatorSubsystem.setPIDPosition(elevatorPosition);
+        // elevatorSubsystem.setProfiledPIDPosition(elevatorPosition);
+        // elevatorSubsystem.setTargetPosition(elevatorPosition);
     }
 
     @Override
@@ -56,6 +58,6 @@ public class ScoringPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.encoderToInch() > 0.9 * elevatorPosition.getValue();
+        return elevatorSubsystem.getElevatorPosition() > 0.75 * elevatorPosition.getValueRotations();
     }
 }

@@ -16,22 +16,22 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public ClimberSubsystem() {
         leftClimbMotor = new SparkMax(28, MotorType.kBrushless);
-        rightClimbMotor = new SparkMax(27, MotorType.kBrushless);
+        // rightClimbMotor = new SparkMax(27, MotorType.kBrushless);
 
         leftClimbMotorConfig = new SparkMaxConfig();
-        rightClimbMotorConfig = new SparkMaxConfig();
+        // rightClimbMotorConfig = new SparkMaxConfig();
 
         leftClimbMotorConfig
                 .inverted(false)
                 .smartCurrentLimit(40);
-        rightClimbMotorConfig
-                .inverted(false)
-                .smartCurrentLimit(40)
-                .follow(leftClimbMotor.getDeviceId());
+        // rightClimbMotorConfig
+        //         .inverted(false)
+        //         .smartCurrentLimit(40)
+        //         .follow(leftClimbMotor.getDeviceId());
 
         leftClimbMotor.configure(leftClimbMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightClimbMotor.configure(rightClimbMotorConfig, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+        // rightClimbMotor.configure(rightClimbMotorConfig, ResetMode.kResetSafeParameters,
+        //         PersistMode.kPersistParameters);
     }
 
     public void setClimberSpeed(double speed) {
@@ -46,7 +46,7 @@ public class ClimberSubsystem extends SubsystemBase {
         return leftClimbMotor.getEncoder().getPosition();
     }
 
-    public double rightClimbMotorPosition() {
-        return rightClimbMotor.getEncoder().getPosition();
-    }
+    // public double rightClimbMotorPosition() {
+    //     return rightClimbMotor.getEncoder().getPosition();
+    // }
 }

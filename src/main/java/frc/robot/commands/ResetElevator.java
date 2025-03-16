@@ -17,14 +17,14 @@ public class ResetElevator extends Command {
 
     @Override
     public void initialize() {
-        elevatorSubsystem.setElevatorSpeed(-0.8);
+        elevatorSubsystem.setElevatorSpeed(-0.3);
         coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
     }
 
     @Override
     public void execute() {
         if (elevatorSubsystem.getBackElevatorLimitSwitch()) {
-            elevatorSubsystem.setElevatorSpeed(-0.4);
+            elevatorSubsystem.setElevatorSpeed(-0.3);
         }
     }
 
@@ -36,7 +36,7 @@ public class ResetElevator extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.getFrontElevatorLimitSwitch();
+        return elevatorSubsystem.getBackElevatorLimitSwitch();
     }
 
 }
