@@ -23,7 +23,7 @@ public class ResetElevator extends Command {
 
     @Override
     public void execute() {
-        if (elevatorSubsystem.getBackElevatorLimitSwitch()) {
+        if (elevatorSubsystem.getFrontElevatorLimitSwitch()) {
             elevatorSubsystem.setElevatorSpeed(-0.3);
         }
     }
@@ -36,7 +36,7 @@ public class ResetElevator extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.getBackElevatorLimitSwitch();
+        return elevatorSubsystem.getFrontElevatorLimitSwitch();
     }
 
 }

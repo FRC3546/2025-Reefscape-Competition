@@ -9,7 +9,7 @@ public class ScoreAlgae extends SequentialCommandGroup {
 
     public ScoreAlgae(ElevatorSubsystem elevatorSubsystem, CoralAlgaeSubsystem coralAlgaeSubsystem) {
         addCommands(
-                new OuttakeAlgae(coralAlgaeSubsystem, 1).withTimeout(0.75),
+                new OuttakeAlgae(coralAlgaeSubsystem, 1).withTimeout(0.5),
                 new Stow(coralAlgaeSubsystem, elevatorSubsystem));
     }
 

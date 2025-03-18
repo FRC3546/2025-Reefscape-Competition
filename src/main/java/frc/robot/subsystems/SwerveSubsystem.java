@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.reefAlignmentConstants;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
 import frc.robot.subsystems.Vision.Cameras;
@@ -61,7 +60,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveSubsystem extends SubsystemBase {
   // defaults to true
   // when false, camera does not update odometry and gyro is zeroed
-  public boolean autoControlEnabled = true;
+  // public boolean autoControlEnabled = true;
 
   /**
    * Swerve drive object.
@@ -149,7 +148,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest && autoControlEnabled) {
+    if (visionDriveTest) {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
     }
@@ -195,7 +194,7 @@ public class SwerveSubsystem extends SubsystemBase {
               // drive trains
 
               // Translation PID constants
-              new PIDConstants(3.5, 0.0, 0.0),
+              new PIDConstants(3, 0.0, 0.0),
 
               // Rotation PID constants
               new PIDConstants(5, 0.0, 0.0)),
@@ -424,7 +423,7 @@ public class SwerveSubsystem extends SubsystemBase {
   // Rotation2d(translatedRot)));
   // }
 
-  public Command rightAutoAlign(ElevatorPositions elevatorPosition) {
+  public Command rightCoralAutoAlign(ElevatorPositions elevatorPosition) {
 
     Pose2d closestTagPose = closestAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
@@ -450,7 +449,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-  public Command leftAutoAlign(ElevatorPositions elevatorPosition) {
+  public Command leftCoralAutoAlign(ElevatorPositions elevatorPosition) {
 
     Pose2d closestTagPose = closestAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
@@ -474,6 +473,29 @@ public class SwerveSubsystem extends SubsystemBase {
     } else {
       return driveToPoseSlow(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
     }
+  }
+
+  public Command algaeAutoAlign(ElevatorPositions elevatorPosition) {
+
+    Pose2d closestTagPose = closestAprilTag(getPose());
+    // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+    // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+
+    double x1 = closestTagPose.getX();
+    double y1 = closestTagPose.getY();
+    double z1 = closestTagPose.getRotation().getRadians();
+
+    double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
+    double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
+    double translatedRot = z1 - Math.PI;
+
+    translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.algaeScoreOffset)
+        * Math.cos(z1 - Math.PI / 2);
+    translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.algaeScoreOffset)
+        * Math.sin(z1 - Math.PI / 2);
+
+    
+    return driveToPoseFast(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
   }
 
   /**
@@ -868,7 +890,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive;
   }
 
-  public void setAutoControl(boolean autoControlEnabled){
-    this.autoControlEnabled = autoControlEnabled;
-  }
+  // public void setAutoControl(boolean autoControlEnabled){
+  //   this.autoControlEnabled = autoControlEnabled;
+  // }
 }

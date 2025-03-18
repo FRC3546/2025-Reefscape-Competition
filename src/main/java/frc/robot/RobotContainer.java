@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import frc.robot.commands.AutoReefAlignRight;
 import frc.robot.commands.BargeScore;
 import frc.robot.commands.CoralStationIntake;
-import frc.robot.commands.ElevatorPID;
 import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.CoralAlgaeSubsystem.CoralPivotPositions;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPositions;
@@ -41,7 +40,6 @@ import frc.robot.commands.CoralAlgaeCommands.IntakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeCoral;
 import frc.robot.commands.ManualCommands.ManualClimb;
-import frc.robot.commands.ManualCommands.ManualElevator;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -59,7 +57,7 @@ public class RobotContainer {
         private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
         private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
         private CommandJoystick buttonBoard = new CommandJoystick(1);
-        private CommandJoystick testJoystick = new CommandJoystick(2);
+        // private CommandJoystick testJoystick = new CommandJoystick(2);
         final CommandXboxController driverController = new CommandXboxController(0);
         private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                         "swerve"));
@@ -71,8 +69,8 @@ public class RobotContainer {
         private int L3Button = 5;
         private int L4Button = 1;
         private int disableAutoButton = 2;
-        private int leftOffsetButton = 10;
-        private int rightOffsetButton = 11;
+        // private int leftOffsetButton = 10;
+        // private int rightOffsetButton = 11;
         private int coralIntakeButton = 6;
         private int fireButton = 7;
         private int coralAlgaeSelector = 3;
@@ -155,7 +153,23 @@ public class RobotContainer {
                                                                 ElevatorPositions.L4),
                                                 new InstantCommand(() -> coralAlgaeSubsystem
                                                                 .setPIDPosition(CoralPivotPositions.L4)),
-                                                new WaitUntilCommand(() -> elevatorSubsystem.getElevatorPosition() > 0.85*ElevatorPositions.L4.getValueRotations())));
+                                                new WaitUntilCommand(
+                                                                () -> elevatorSubsystem.getElevatorPosition() > 0.95
+                                                                                * ElevatorPositions.L4
+                                                                                                .getValueRotations())));
+
+                NamedCommands.registerCommand("Prepare Score",
+                                new SequentialCommandGroup(
+                                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2,
+                                                                elevatorSubsystem,
+                                                                ElevatorPositions.L2),
+                                                new InstantCommand(() -> coralAlgaeSubsystem
+                                                                .setPIDPosition(CoralPivotPositions.L2)),
+                                                new WaitUntilCommand(
+                                                                () -> elevatorSubsystem.getElevatorPosition() > 0.6
+                                                                                * ElevatorPositions.L2
+                                                                                                .getValueRotations())));
+
                 NamedCommands.registerCommand("Elevator to L3",
                                 new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
                                                 ElevatorPositions.L3));
@@ -170,6 +184,8 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Stow", new AutoStow(coralAlgaeSubsystem, elevatorSubsystem));
                 NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(1));
 
+                autoChooser.addOption("Processor Side 3", swerveSubsystem.getAutonomousCommand("3 Processor Side"));
+                autoChooser.addOption("NOT Processor Side 3", swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
                 autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 2.5",
                                 swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
@@ -180,7 +196,8 @@ public class RobotContainer {
                 configureBindings();
                 DriverStation.silenceJoystickConnectionWarning(true);
 
-                // elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, () -> (testJoystick.getY())));
+                // elevatorSubsystem.setDefaultCommand(new ManualElevator(elevatorSubsystem, ()
+                // -> (testJoystick.getY())));
         }
 
         /**
@@ -198,25 +215,28 @@ public class RobotContainer {
          */
         private void configureBindings() {
 
-                new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
+                new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.3));
 
-                // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem
-                //                 .addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
-                // buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem
-                //                 .addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
+                // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() ->
+                // elevatorSubsystem
+                // .addSubtractManualOffset(elevatorSubsystem.inchToEncoderConverter(1))));
+                // buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() ->
+                // elevatorSubsystem
+                // .addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
 
                 buttonBoard.button(coralAlgaeSelector)
                                 .onTrue(new InstantCommand(
                                                 () -> coralAlgaeSubsystem
-                                                                .setCoralIntakeMode(!coralAlgaeSubsystem.coralIntaking)))
+                                                                .setCoralIntakeMode(
+                                                                                !coralAlgaeSubsystem.coralIntaking)))
                                 .debounce(1);
 
-                buttonBoard.button(disableAutoButton)
-                                .toggleOnTrue(new InstantCommand(() -> swerveSubsystem
-                                                .setAutoControl(!swerveSubsystem.autoControlEnabled)));
-                
-                buttonBoard.button(disableAutoButton).and(() -> (swerveSubsystem.autoControlEnabled == false))
-                        .toggleOnTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro()));
+                // buttonBoard.button(disableAutoButton)
+                //                 .toggleOnTrue(new InstantCommand(() -> swerveSubsystem
+                //                                 .setAutoControl(!swerveSubsystem.autoControlEnabled)));
+
+                // buttonBoard.button(disableAutoButton).and(() -> (swerveSubsystem.autoControlEnabled == false))
+                //                 .toggleOnTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro()));
 
                 buttonBoard.button(L4Button).onTrue(new ConditionalCommand(
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
@@ -268,17 +288,40 @@ public class RobotContainer {
                                                 .andThen(new WaitCommand(0.75).andThen(new InstantCommand(
                                                                 () -> elevatorSubsystem.zeroElevatorPosition()))));
 
-                driverController.button(driverRightAlign)
-                                .onTrue(new DeferredCommand(
+                driverController.button(driverLeftAlign).onTrue(new ConditionalCommand(
+                                new DeferredCommand(
                                                 () -> swerveSubsystem
-                                                                .rightAutoAlign(elevatorSubsystem.getElevatorTarget()),
-                                                Set.of(swerveSubsystem)));
-                driverController.button(driverLeftAlign)
-                                .onTrue(new DeferredCommand(
+                                                                .leftCoralAutoAlign(
+                                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)),
+                                new DeferredCommand(
                                                 () -> swerveSubsystem
-                                                                .leftAutoAlign(elevatorSubsystem.getElevatorTarget()),
-                                                Set.of(swerveSubsystem)));
+                                                                .algaeAutoAlign(elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)),
+                                () -> coralAlgaeSubsystem.coralIntaking));
 
+                driverController.button(driverRightAlign).onTrue(new ConditionalCommand(
+                                new DeferredCommand(
+                                                () -> swerveSubsystem
+                                                                .rightCoralAutoAlign(
+                                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)),
+                                new DeferredCommand(
+                                                () -> swerveSubsystem
+                                                                .algaeAutoAlign(elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)),
+                                () -> coralAlgaeSubsystem.coralIntaking));
+
+                // driverController.button(driverRightAlign)
+                // .onTrue(new DeferredCommand(
+                // () -> swerveSubsystem
+                // .rightAutoAlign(elevatorSubsystem.getElevatorTarget()),
+                // Set.of(swerveSubsystem)));
+                // driverController.button(driverLeftAlign)
+                // .onTrue(new DeferredCommand(
+                // () -> swerveSubsystem
+                // .leftAutoAlign(elevatorSubsystem.getElevatorTarget()),
+                // Set.of(swerveSubsystem)));
 
                 // swerve logic
                 // (Condition) ? Return-On-True : Return-on-False
@@ -317,16 +360,20 @@ public class RobotContainer {
                 SmartDashboard.putBoolean("is Back Limit Switch enabled",
                                 elevatorSubsystem.getBackElevatorLimitSwitch());
                 SmartDashboard.putNumber("Elevator Position Enc", elevatorSubsystem.getElevatorPosition());
-                // SmartDashboard.putNumber("internal intake", coralAlgaeSubsystem.getInternalPivotEncoder());
-                // SmartDashboard.putNumber("Elevator Position Inch", elevatorSubsystem.encoderToInch());
-                SmartDashboard.putNumber("Elevator Target Position", elevatorSubsystem.getElevatorTarget().getValueRotations());
+                // SmartDashboard.putNumber("internal intake",
+                // coralAlgaeSubsystem.getInternalPivotEncoder());
+                // SmartDashboard.putNumber("Elevator Position Inch",
+                // elevatorSubsystem.encoderToInch());
+                SmartDashboard.putNumber("Elevator Target Position",
+                                elevatorSubsystem.getElevatorTarget().getValueRotations());
                 SmartDashboard.putBoolean("coral break beam", coralAlgaeSubsystem.getCoralSensor());
                 SmartDashboard.putNumber("left climber position", climberSubsystem.leftClimbMotorPosition());
-                // SmartDashboard.putNumber("right climber position", climberSubsystem.rightClimbMotorPosition());
+                // SmartDashboard.putNumber("right climber position",
+                // climberSubsystem.rightClimbMotorPosition());
                 SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
                 SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
                 SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
-                SmartDashboard.putBoolean("Auto enabled", swerveSubsystem.autoControlEnabled);
+                // SmartDashboard.putBoolean("Auto enabled", swerveSubsystem.autoControlEnabled);
                 SmartDashboard.putNumber("front elevator current", elevatorSubsystem.getFrontElevatorCurrent());
                 SmartDashboard.putNumber("back elevator current", elevatorSubsystem.getBackElevatorCurrent());
 
@@ -338,7 +385,7 @@ public class RobotContainer {
         }
 
         // public boolean isCoralIntakeMode() {
-        //         return coralAlgaeSubsystem.coralMode;
+        // return coralAlgaeSubsystem.coralMode;
         // }
 
         public void updateElevatorTargetPosition() {
