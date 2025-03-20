@@ -27,7 +27,7 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
     //.7199
     public enum CoralPivotPositions {
         // increases moving towards the front
-        L1(0.72 + 0.021),
+        L1(0.195),
         L2(0.72 + 0.021),
         L3(0.72 + 0.021),
         L4(0.758 + 0.021),

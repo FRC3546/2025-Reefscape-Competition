@@ -42,7 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         // CoralStation(30.5),
         // MaxHeight(94),
         // MinimumHeight(8);
-        L1(4.8435791),
+        L1(2.04),
         L2(4.5),
         L3(6.5),
         L4(10.7),

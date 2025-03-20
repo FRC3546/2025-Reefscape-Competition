@@ -19,11 +19,10 @@ public class Stow extends Command {
 
     @Override
     public void initialize() {
-        if(coralSubsystem.coralIntaking == false){
+        if (coralSubsystem.coralIntaking == false) {
             elevatorSubsystem.setPIDPosition(ElevatorPositions.AlgaeReefLow);
             coralSubsystem.setPIDPosition(CoralPivotPositions.AlgaeReef);
-        }
-        else{
+        } else {
             elevatorSubsystem.setPIDPosition(ElevatorPositions.Stow);
             coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
         }
@@ -31,10 +30,12 @@ public class Stow extends Command {
 
     @Override
     public void execute() {
-        if (!coralSubsystem.getCoralSensor()) {
-            coralSubsystem.setIntakeMotorSpeed(-0.3);
-        } else {
-            coralSubsystem.stopIntakeMotor();
+        if (coralSubsystem.coralIntaking == true) {
+            if (!coralSubsystem.getCoralSensor()) {
+                coralSubsystem.setIntakeMotorSpeed(-0.3);
+            } else {
+                coralSubsystem.stopIntakeMotor();
+            }
         }
     }
 

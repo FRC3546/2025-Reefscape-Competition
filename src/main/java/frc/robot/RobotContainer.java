@@ -48,6 +48,7 @@ import frc.robot.commands.AutoCommands.AutoCoralStationIntake;
 import frc.robot.commands.AutoCommands.AutoScoringPosition;
 import frc.robot.commands.AutoCommands.AutoStow;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import frc.robot.commands.L1ScoreCoral;
 
 public class RobotContainer {
         public ElevatorSubsystem.ElevatorPositions targetElevatorPosition = ElevatorSubsystem.ElevatorPositions.Stow;
@@ -182,10 +183,12 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Coral Station Intake",
                                 new AutoCoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
                 NamedCommands.registerCommand("Stow", new AutoStow(coralAlgaeSubsystem, elevatorSubsystem));
-                NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(0.75));
+                NamedCommands.registerCommand("Score Coral",
+                                new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(0.75));
 
                 autoChooser.addOption("Processor Side 3", swerveSubsystem.getAutonomousCommand("3 Processor Side"));
-                autoChooser.addOption("NOT Processor Side 3", swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
+                autoChooser.addOption("NOT Processor Side 3",
+                                swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
                 autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 2.5",
                                 swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
@@ -224,8 +227,10 @@ public class RobotContainer {
                 // elevatorSubsystem
                 // .addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
 
-                buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.bumpPIDPosition(-0.25)));
-                buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.bumpPIDPosition(0.25)));
+                buttonBoard.button(rightOffsetButton)
+                                .onTrue(new InstantCommand(() -> elevatorSubsystem.bumpPIDPosition(-0.25)));
+                buttonBoard.button(leftOffsetButton)
+                                .onTrue(new InstantCommand(() -> elevatorSubsystem.bumpPIDPosition(0.25)));
 
                 buttonBoard.button(coralAlgaeSelector)
                                 .onTrue(new InstantCommand(
@@ -235,11 +240,12 @@ public class RobotContainer {
                                 .debounce(1);
 
                 // buttonBoard.button(disableAutoButton)
-                //                 .toggleOnTrue(new InstantCommand(() -> swerveSubsystem
-                //                                 .setAutoControl(!swerveSubsystem.autoControlEnabled)));
+                // .toggleOnTrue(new InstantCommand(() -> swerveSubsystem
+                // .setAutoControl(!swerveSubsystem.autoControlEnabled)));
 
-                // buttonBoard.button(disableAutoButton).and(() -> (swerveSubsystem.autoControlEnabled == false))
-                //                 .toggleOnTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro()));
+                // buttonBoard.button(disableAutoButton).and(() ->
+                // (swerveSubsystem.autoControlEnabled == false))
+                // .toggleOnTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro()));
 
                 buttonBoard.button(L4Button).onTrue(new ConditionalCommand(
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4, elevatorSubsystem,
@@ -264,14 +270,19 @@ public class RobotContainer {
                                 () -> coralAlgaeSubsystem.coralIntaking));
 
                 buttonBoard.button(L1Button).onTrue(new ConditionalCommand(
-                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
-                                                ElevatorPositions.L2),
+                                new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L1, elevatorSubsystem,
+                                                ElevatorPositions.L1),
                                 new ScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.AlgaeReef,
                                                 elevatorSubsystem, ElevatorPositions.Processor),
                                 () -> coralAlgaeSubsystem.coralIntaking));
 
                 buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralIntaking)
+                                .and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.L1))
                                 .onTrue(new ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem));
+
+                buttonBoard.button(fireButton).and(() -> coralAlgaeSubsystem.coralIntaking)
+                                .and(() -> elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.L1)
+                                .onTrue(new L1ScoreCoral(elevatorSubsystem, coralAlgaeSubsystem));
 
                 buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralIntaking)
                                 .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
@@ -376,7 +387,8 @@ public class RobotContainer {
                 SmartDashboard.putNumber("Intake Current", coralAlgaeSubsystem.getAlgaeCurrent());
                 SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
                 SmartDashboard.putNumber("Manual Offset value", elevatorSubsystem.getManualOffset());
-                // SmartDashboard.putBoolean("Auto enabled", swerveSubsystem.autoControlEnabled);
+                // SmartDashboard.putBoolean("Auto enabled",
+                // swerveSubsystem.autoControlEnabled);
                 SmartDashboard.putNumber("front elevator current", elevatorSubsystem.getFrontElevatorCurrent());
                 SmartDashboard.putNumber("back elevator current", elevatorSubsystem.getBackElevatorCurrent());
 
