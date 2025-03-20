@@ -69,8 +69,8 @@ public class RobotContainer {
         private int L3Button = 5;
         private int L4Button = 1;
         private int disableAutoButton = 2;
-        // private int leftOffsetButton = 10;
-        // private int rightOffsetButton = 11;
+        private int leftOffsetButton = 10;
+        private int rightOffsetButton = 11;
         private int coralIntakeButton = 6;
         private int fireButton = 7;
         private int coralAlgaeSelector = 3;
@@ -182,7 +182,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Coral Station Intake",
                                 new AutoCoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
                 NamedCommands.registerCommand("Stow", new AutoStow(coralAlgaeSubsystem, elevatorSubsystem));
-                NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(1));
+                NamedCommands.registerCommand("Score Coral", new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(0.75));
 
                 autoChooser.addOption("Processor Side 3", swerveSubsystem.getAutonomousCommand("3 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 3", swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
@@ -223,6 +223,9 @@ public class RobotContainer {
                 // buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() ->
                 // elevatorSubsystem
                 // .addSubtractManualOffset(-elevatorSubsystem.inchToEncoderConverter(1))));
+
+                buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.bumpPIDPosition(-0.25)));
+                buttonBoard.button(leftOffsetButton).onTrue(new InstantCommand(() -> elevatorSubsystem.bumpPIDPosition(0.25)));
 
                 buttonBoard.button(coralAlgaeSelector)
                                 .onTrue(new InstantCommand(

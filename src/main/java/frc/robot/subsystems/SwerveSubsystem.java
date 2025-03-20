@@ -194,7 +194,7 @@ public class SwerveSubsystem extends SubsystemBase {
               // drive trains
 
               // Translation PID constants
-              new PIDConstants(3, 0.0, 0.0),
+              new PIDConstants(3.5, 0.0, 0.0),
 
               // Rotation PID constants
               new PIDConstants(5, 0.0, 0.0)),
@@ -300,7 +300,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param robotRelativeChassisSpeed Robot relative {@link ChassisSpeeds} to
    *                                  achieve.
    * @return {@link Command} to run.
-   * @throws IOException    If the PathPlanner GUI settings is invalid
+   * @throws IOxception    If the PathPlanner GUI settings is invalid
    * @throws ParseException If PathPlanner GUI settings is nonexistent.
    */
   private Command driveWithSetpointGenerator(Supplier<ChassisSpeeds> robotRelativeChassisSpeed)

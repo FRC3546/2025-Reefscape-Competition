@@ -43,15 +43,15 @@ public class ElevatorSubsystem extends SubsystemBase {
         // MaxHeight(94),
         // MinimumHeight(8);
         L1(4.8435791),
-        L2(4.8435791),
-        L3(6.8967529),
+        L2(4.5),
+        L3(6.5),
         L4(10.7),
         Barge(10.7),
-        AlgaeReefHigh(5.45),
-        AlgaeReefLow(3.25),
+        AlgaeReefHigh(5.15),
+        AlgaeReefLow(3.2),
         Processor(3.5),
         Stow(4),
-        CoralStation(3.5),
+        CoralStation(3.2),
         MaxHeight(10.75),
         MinimumHeight(0);
 
@@ -156,6 +156,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorPID.setReference(position.getValueRotations() + getManualOffset(), ControlType.kPosition);
     }
 
+    public void bumpPIDPosition(double offset){
+        backElevatorMotorPID.setReference(getElevatorPosition() + offset, ControlType.kPosition);
+    }
+
     public void setProfiledPIDPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
         if(getElevatorPosition() >= 0){
@@ -165,17 +169,6 @@ public class ElevatorSubsystem extends SubsystemBase {
             backElevatorMotor.set(0);
         }
     }
-
-
-    // public Command setProfiledPIDPosition(ElevatorPositions position){
-    //     targetElevatorPosition = position;
-
-    //     return 
-    // }
-
-    // public void bumbPIDPosition() {
-    //     backElevatorMotorPID.setReference(targetElevatorPosition.getValue() + getManualOffset(), ControlType.kPosition);
-    // }
 
     public ElevatorPositions getElevatorTarget() {
         return targetElevatorPosition;
