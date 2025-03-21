@@ -29,6 +29,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -70,7 +71,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * AprilTag field layout.
    */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-      .loadField(AprilTagFields.k2025ReefscapeAndyMark);
+      .loadField(AprilTagFields.k2025ReefscapeWelded);
   /**
    * Enable vision odometry updates while driving.
    */
@@ -122,6 +123,7 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
+    SmartDashboard.putNumber("Auto Align Offset", Constants.reefAlignmentConstants.coralScoreOffset);
   }
 
   /**
@@ -137,6 +139,8 @@ public class SwerveSubsystem extends SubsystemBase {
         new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
             Rotation2d.fromDegrees(0)));
   }
+
+
 
   /**
    * Setup the photon vision class.
@@ -437,9 +441,11 @@ public class SwerveSubsystem extends SubsystemBase {
     double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
     double translatedRot = z1 - Math.PI;
 
-    translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+    double coralOffset = SmartDashboard.getNumber("Auto Align Offset", reefAlignmentConstants.coralScoreOffset);
+
+    translatedX += (reefAlignmentConstants.reefSpacing - coralOffset)
         * Math.cos(z1 + Math.PI / 2);
-    translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.coralScoreOffset)
+    translatedY += (reefAlignmentConstants.reefSpacing - coralOffset)
         * Math.sin(z1 + Math.PI / 2);
 
     if (elevatorPosition == ElevatorPositions.L2 || elevatorPosition == ElevatorPositions.L3) {
@@ -463,9 +469,12 @@ public class SwerveSubsystem extends SubsystemBase {
     double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
     double translatedRot = z1 - Math.PI;
 
-    translatedX += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+    double coralOffset = SmartDashboard.getNumber("Auto Align Offset", reefAlignmentConstants.coralScoreOffset);
+
+
+    translatedX += (reefAlignmentConstants.reefSpacing + coralOffset)
         * Math.cos(z1 - Math.PI / 2);
-    translatedY += (reefAlignmentConstants.reefSpacing + reefAlignmentConstants.coralScoreOffset)
+    translatedY += (reefAlignmentConstants.reefSpacing + coralOffset)
         * Math.sin(z1 - Math.PI / 2);
 
     if (elevatorPosition == ElevatorPositions.L2 || elevatorPosition == ElevatorPositions.L3) {
