@@ -9,15 +9,34 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Elevator to L4"
+                  "pathName": "NoProcessor to J Global"
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "NoProcessor to J Slow"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Prepare Score"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator to L4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -36,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "J to Load Slow"
+                  "pathName": "J to Load Global"
                 }
               },
               {
@@ -68,13 +87,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Load to K Slow"
+                  "pathName": "Load to K Global"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Elevator to L4"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator to L4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -93,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "K to Load Slow"
+                  "pathName": "K to Load Global"
                 }
               },
               {
