@@ -157,7 +157,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Load to L Global"
+                  "pathName": "Load to Prep NoProcessor"
                 }
               },
               {
@@ -173,7 +173,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Elevator to L4"
+                        "name": "Prepare Score"
                       }
                     }
                   ]
@@ -181,17 +181,11 @@
               }
             ]
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
-          }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

@@ -186,11 +186,11 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Score Coral",
                                 new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(0.75));
 
-                autoChooser.addOption("Processor Side 3", swerveSubsystem.getAutonomousCommand("3 Processor Side"));
-                autoChooser.addOption("NOT Processor Side 3",
-                                swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
-                autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
+                autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("3 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 2.5",
+                                swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
+                autoChooser.addOption("Processor Side 2", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
+                autoChooser.addOption("NOT Processor Side 2",
                                 swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
                 autoChooser.addOption("Back up",
                                 swerveSubsystem.driveCommand(() -> 0, () -> -0.5, () -> 0).withTimeout(1));
