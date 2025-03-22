@@ -192,7 +192,7 @@ public class RobotContainer {
                 autoChooser.addOption("Processor Side 2", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 2",
                                 swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
-                autoChooser.addOption("Drive Forward",
+                autoChooser.addOption("Center Side 1",
                         swerveSubsystem.getAutonomousCommand("1 Coral Middle"));
                 autoChooser.addOption("Back up",
                                 swerveSubsystem.driveCommand(() -> 0, () -> -0.5, () -> 0).withTimeout(1));
@@ -288,7 +288,7 @@ public class RobotContainer {
 
                 buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralIntaking)
                                 .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
-                                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.75))
+                                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.5625))
                                 .onFalse(new SequentialCommandGroup(new WaitCommand(1),
                                                 new Stow(coralAlgaeSubsystem, elevatorSubsystem)));
 
