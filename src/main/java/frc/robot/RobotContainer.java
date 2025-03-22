@@ -192,6 +192,8 @@ public class RobotContainer {
                 autoChooser.addOption("Processor Side 2", swerveSubsystem.getAutonomousCommand("2.5 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 2",
                                 swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
+                autoChooser.addOption("Drive Forward",
+                        swerveSubsystem.getAutonomousCommand("1 Coral Middle"));
                 autoChooser.addOption("Back up",
                                 swerveSubsystem.driveCommand(() -> 0, () -> -0.5, () -> 0).withTimeout(1));
                 SmartDashboard.putData("Autonomous Routines", autoChooser);

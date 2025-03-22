@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralAlgaeCommands.IntakeCoral;
 import frc.robot.subsystems.CoralAlgaeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -17,7 +18,8 @@ public class CoralStationIntake extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         new InstantCommand(() -> elevatorSubsystem.setPIDPosition(ElevatorPositions.CoralStation)),
                         new InstantCommand(() -> coralSubsystem.setPIDPosition(CoralPivotPositions.CoralStation))),
-                new IntakeCoral(coralSubsystem, 0.8),
+                new IntakeCoral(coralSubsystem, 1),
+                new WaitCommand(0.1),
                 new Stow(coralSubsystem, elevatorSubsystem));
     }
 

@@ -43,8 +43,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         // MaxHeight(94),
         // MinimumHeight(8);
         L1(2.04),
-        L2(4.50),
-        L3(6.50),
+        L2(4.75),
+        L3(6.75),
         L4(10.45),
         Barge(10.7),
         AlgaeReefHigh(5.15),
