@@ -286,7 +286,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPoseFast(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        3.25, 1.75,
+        3.5, 2,
         Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -351,9 +351,38 @@ public class SwerveSubsystem extends SubsystemBase {
 
   }
 
-  public Pose2d closestAprilTag(Pose2d robotPose) {
+  public Pose2d closestReefAprilTag(Pose2d robotPose) {
     // Use the robot pose and return the closest AprilTag on a REEF
     List<Integer> tagIDs = List.of(17, 18, 19, 20, 21, 22, 6, 7, 8, 9, 10, 11);
+
+    double minDistance = Double.MAX_VALUE;
+    int closestTagID = 0;
+    Pose2d closestTagPose = new Pose2d();
+
+    for (int tagID : tagIDs) {
+      var tagPoseOptional = aprilTagFieldLayout.getTagPose(tagID);
+      var tagPose = tagPoseOptional.get();
+      Pose2d tagPose2d = new Pose2d(tagPose.getX(), tagPose.getY(), new Rotation2d(tagPose.getRotation().getZ()));
+      double distance = robotPose.getTranslation().getDistance(tagPose2d.getTranslation());
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestTagPose = tagPose2d;
+        closestTagID = tagID;
+      }
+    }
+
+    // if (closestTagID == 1) {
+    // closestTagPose = new Pose2d(closestTagPose.getX(), closestTagPose.getY(), new
+    // Rotation2d(closestTagPose.getRotation().getRadians() - Math.PI));
+    // }
+
+    return closestTagPose;
+  }
+
+  public Pose2d closestCoralStationAprilTag(Pose2d robotPose) {
+    // Use the robot pose and return the closest AprilTag on a REEF
+    List<Integer> tagIDs = List.of(1,2,12,13);
 
     double minDistance = Double.MAX_VALUE;
     int closestTagID = 0;
@@ -427,9 +456,33 @@ public class SwerveSubsystem extends SubsystemBase {
   // Rotation2d(translatedRot)));
   // }
 
+  public Command coralStationAutoAlign() {
+
+    Pose2d closestTagPose = closestCoralStationAprilTag(getPose());
+    // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+    // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+
+    double x1 = closestTagPose.getX();
+    double y1 = closestTagPose.getY();
+    double z1 = closestTagPose.getRotation().getRadians();
+
+    double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
+    double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
+    double translatedRot = z1;
+
+    double coralOffset = SmartDashboard.getNumber("Auto Align Offset", reefAlignmentConstants.coralScoreOffset);
+
+    translatedX += (reefAlignmentConstants.reefSpacing - coralOffset)
+        * Math.cos(z1 + Math.PI / 2);
+    translatedY += (reefAlignmentConstants.reefSpacing - coralOffset)
+        * Math.sin(z1 + Math.PI / 2);
+
+    return driveToPoseFast(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+  }
+
   public Command rightCoralAutoAlign(ElevatorPositions elevatorPosition) {
 
-    Pose2d closestTagPose = closestAprilTag(getPose());
+    Pose2d closestTagPose = closestReefAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
     // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
 
@@ -457,7 +510,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Command leftCoralAutoAlign(ElevatorPositions elevatorPosition) {
 
-    Pose2d closestTagPose = closestAprilTag(getPose());
+    Pose2d closestTagPose = closestReefAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
     // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
 
@@ -484,9 +537,32 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
+  public Command L1CoralAutoAlign(ElevatorPositions elevatorPosition) {
+
+    Pose2d closestTagPose = closestReefAprilTag(getPose());
+    // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
+    // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
+
+    double x1 = closestTagPose.getX();
+    double y1 = closestTagPose.getY();
+    double z1 = closestTagPose.getRotation().getRadians();
+
+    double translatedX = x1 + ((reefAlignmentConstants.robotWidth / 2) * Math.cos(z1));
+    double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
+    double translatedRot = z1;
+
+    translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.algaeScoreOffset)
+        * Math.cos(z1 - Math.PI / 2);
+    translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.algaeScoreOffset)
+        * Math.sin(z1 - Math.PI / 2);
+
+    
+    return driveToPoseFast(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
+  }
+
   public Command algaeAutoAlign(ElevatorPositions elevatorPosition) {
 
-    Pose2d closestTagPose = closestAprilTag(getPose());
+    Pose2d closestTagPose = closestReefAprilTag(getPose());
     // SmartDashboard.putNumber("Closest Tag X", closestTagPose.getX());
     // SmartDashboard.putNumber("Closest Tag Y", closestTagPose.getY());
 

@@ -193,7 +193,7 @@ public class RobotContainer {
                 autoChooser.addOption("NOT Processor Side 2",
                                 swerveSubsystem.getAutonomousCommand("2.5 NoProcessor Side"));
                 autoChooser.addOption("Center Side 1",
-                        swerveSubsystem.getAutonomousCommand("1 Coral Middle"));
+                                swerveSubsystem.getAutonomousCommand("1 Coral Middle"));
                 autoChooser.addOption("Back up",
                                 swerveSubsystem.driveCommand(() -> 0, () -> -0.5, () -> 0).withTimeout(1));
                 SmartDashboard.putData("Autonomous Routines", autoChooser);
@@ -304,29 +304,85 @@ public class RobotContainer {
                                                 .andThen(new WaitCommand(0.75).andThen(new InstantCommand(
                                                                 () -> elevatorSubsystem.zeroElevatorPosition()))));
 
-                driverController.button(driverLeftAlign).onTrue(new ConditionalCommand(
-                                new DeferredCommand(
-                                                () -> swerveSubsystem
-                                                                .leftCoralAutoAlign(
-                                                                                elevatorSubsystem.getElevatorTarget()),
-                                                Set.of(swerveSubsystem)),
-                                new DeferredCommand(
-                                                () -> swerveSubsystem
-                                                                .algaeAutoAlign(elevatorSubsystem.getElevatorTarget()),
-                                                Set.of(swerveSubsystem)),
-                                () -> coralAlgaeSubsystem.coralIntaking));
+                // driverController.button(driverLeftAlign).onTrue(new ConditionalCommand(
+                // new DeferredCommand(
+                // () -> swerveSubsystem
+                // .leftCoralAutoAlign(
+                // elevatorSubsystem.getElevatorTarget()),
+                // Set.of(swerveSubsystem)),
+                // new DeferredCommand(
+                // () -> swerveSubsystem
+                // .algaeAutoAlign(elevatorSubsystem.getElevatorTarget()),
+                // Set.of(swerveSubsystem)),
+                // () -> coralAlgaeSubsystem.coralIntaking));
 
-                driverController.button(driverRightAlign).onTrue(new ConditionalCommand(
-                                new DeferredCommand(
-                                                () -> swerveSubsystem
-                                                                .rightCoralAutoAlign(
-                                                                                elevatorSubsystem.getElevatorTarget()),
-                                                Set.of(swerveSubsystem)),
-                                new DeferredCommand(
-                                                () -> swerveSubsystem
-                                                                .algaeAutoAlign(elevatorSubsystem.getElevatorTarget()),
-                                                Set.of(swerveSubsystem)),
-                                () -> coralAlgaeSubsystem.coralIntaking));
+                // driverController.button(driverRightAlign).onTrue(new ConditionalCommand(
+                // new DeferredCommand(
+                // () -> swerveSubsystem
+                // .rightCoralAutoAlign(
+                // elevatorSubsystem.getElevatorTarget()),
+                // Set.of(swerveSubsystem)),
+                // new DeferredCommand(
+                // () -> swerveSubsystem
+                // .algaeAutoAlign(elevatorSubsystem.getElevatorTarget()),
+                // Set.of(swerveSubsystem)),
+                // () -> coralAlgaeSubsystem.coralIntaking));
+
+                // AUTO ALIGN BUTTONS
+                // CORAL STATION INTAKE AUTO ALIGN
+                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> (elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                                .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.coralStationAutoAlign(),
+                                                Set.of(swerveSubsystem)));
+
+                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> (elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                                .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.coralStationAutoAlign(),
+                                                Set.of(swerveSubsystem)));
+                // CORAL L2-L4 AUTO ALIGN
+                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                                .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.leftCoralAutoAlign(
+                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)));
+
+                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                                .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.rightCoralAutoAlign(
+                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)));
+
+                // L1 AUTO ALIGN
+                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                                .and(() -> (elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.L1CoralAutoAlign(
+                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)));
+
+                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                                .and(() -> (elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.L1CoralAutoAlign(
+                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)));
+
+                // ALGAE AUTO ALIGN
+                driverController.button(driverLeftAlign).and(() -> !coralAlgaeSubsystem.coralIntaking)
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.algaeAutoAlign(
+                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)));
+
+                driverController.button(driverRightAlign).and(() -> !coralAlgaeSubsystem.coralIntaking)
+                                .whileTrue(new DeferredCommand(
+                                                () -> swerveSubsystem.algaeAutoAlign(
+                                                                elevatorSubsystem.getElevatorTarget()),
+                                                Set.of(swerveSubsystem)));
 
                 // driverController.button(driverRightAlign)
                 // .onTrue(new DeferredCommand(

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkMax;
@@ -16,6 +17,7 @@ import com.revrobotics.spark.SparkLimitSwitch;
 public class CoralAlgaeSubsystem extends SubsystemBase {
 
     private SparkLimitSwitch coralSensor;
+    private SparkAnalogSensor algaeSensor;
     private SparkMax pivotMotor;
     private SparkMax intakeMotor;
     private SparkAbsoluteEncoder throughBoreEncoder;
@@ -53,6 +55,7 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         intakeMotor = new SparkMax(48, MotorType.kBrushed);
         pivotMotor = new SparkMax(47, MotorType.kBrushless);
         coralSensor = intakeMotor.getForwardLimitSwitch();
+        algaeSensor = intakeMotor.getAnalog();
         intakeMotorConfig = new SparkMaxConfig();
         pivotMotorConfig = new SparkMaxConfig();
         pivotMotorPID = pivotMotor.getClosedLoopController();
@@ -109,6 +112,10 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
 
     public boolean getCoralSensor(){
         return coralSensor.isPressed();
+    }
+
+    public double getAlgaeSensor(){
+        return algaeSensor.getVoltage();
     }
 
     public void setPIDPosition(CoralPivotPositions position) {
