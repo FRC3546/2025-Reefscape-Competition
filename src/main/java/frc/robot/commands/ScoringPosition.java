@@ -35,24 +35,6 @@ public class ScoringPosition extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // switch (elevatorSubsystem.getElevatorTarget()) {
-        // case L4:
-        // coralSubsystem.setPIDPosition(CoralPivotPositions.L4);
-        // case L3:
-        // coralSubsystem.setPIDPosition(CoralPivotPositions.L3);
-        // case L2:
-        // coralSubsystem.setPIDPosition(CoralPivotPositions.L2);
-        // case L1:
-        // coralSubsystem.setPIDPosition(CoralPivotPositions.L1);
-        // default:
-        // coralSubsystem.setPIDPosition(CoralPivotPositions.Stow);
-        // }
-        // try {
-        // wait(1000);
-        // } catch (InterruptedException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
         coralSubsystem.setPIDPosition(coralPivotPositions);
     }
 

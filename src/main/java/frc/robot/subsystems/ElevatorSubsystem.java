@@ -6,13 +6,12 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -27,7 +26,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkMaxConfig backElevatorMotorConfig;
     private SparkMaxConfig frontElevatorMotorConfig;
     private ElevatorPositions targetElevatorPosition;
-    private ProfiledPIDController pidController;
 
     public enum ElevatorPositions {
         // L1(10),
@@ -67,12 +65,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         // public double getValueInches() {
-        //     return value;
+        // return value;
         // }
     }
 
     public ElevatorSubsystem() {
-        pidController = new ProfiledPIDController(5, 0, 0.5, new TrapezoidProfile.Constraints(0.75, 0.25));
         // elevator direction good
         backElevatorLimitSwitch = new DigitalInput(0);
         frontElevatorLimitSwitch = new DigitalInput(1);
@@ -83,8 +80,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorConfig = new SparkMaxConfig();
         frontElevatorMotorConfig = new SparkMaxConfig();
         throughBoreEncoder = backElevatorMotor.getAlternateEncoder();
-
-
 
         backElevatorMotorConfig.alternateEncoder
                 .countsPerRevolution(8192)
@@ -100,14 +95,22 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .inverted(false)
                 .smartCurrentLimit(40);
 
+        // kSlot0 = down PID
+        // kSlot1 = up PID
         backElevatorMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-                .p(0.85)
-                .i(0.0000000000000015)
-                .d(0)
-                .iMaxAccum(0.010000000)
-                .outputRange(-0.72, 1);
+                .p(0.85, ClosedLoopSlot.kSlot0)
+                .i(0.0000000000000015, ClosedLoopSlot.kSlot0)
+                .d(0, ClosedLoopSlot.kSlot0)
+                .iMaxAccum(0.010000000, ClosedLoopSlot.kSlot0)
+                .outputRange(-0.72, 1, ClosedLoopSlot.kSlot0)
 
+                .p(0.85, ClosedLoopSlot.kSlot1)
+                .i(0.0000000000000015, ClosedLoopSlot.kSlot1)
+                .d(0, ClosedLoopSlot.kSlot1)
+                .iMaxAccum(0.010000000, ClosedLoopSlot.kSlot1)
+                .outputRange(-0.72, 1, ClosedLoopSlot.kSlot1);
+        ;
 
         // front motor is follower
         frontElevatorMotorConfig
@@ -143,7 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return throughBoreEncoder.getVelocity();
     }
 
-    public ElevatorPositions getTargetElevatorPosition(){
+    public ElevatorPositions getTargetElevatorPosition() {
         return targetElevatorPosition;
     }
 
@@ -153,21 +156,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void setPIDPosition(ElevatorPositions position) {
         targetElevatorPosition = position;
-        backElevatorMotorPID.setReference(position.getValueRotations() + getManualOffset(), ControlType.kPosition);
+        if (getElevatorPosition() < position.getValueRotations()) {
+            backElevatorMotorPID.setReference(position.getValueRotations() + getManualOffset(), ControlType.kPosition,
+                    ClosedLoopSlot.kSlot1);
+        } else if (getElevatorPosition() > position.getValueRotations()) {
+            backElevatorMotorPID.setReference(position.getValueRotations() + getManualOffset(), ControlType.kPosition,
+                    ClosedLoopSlot.kSlot0);
+        } else {
+            backElevatorMotorPID.setReference(position.getValueRotations() + getManualOffset(), ControlType.kPosition,
+                    ClosedLoopSlot.kSlot0);
+        }
+
     }
 
-    public void bumpPIDPosition(double offset){
+    public void bumpPIDPosition(double offset) {
         backElevatorMotorPID.setReference(getElevatorPosition() + offset, ControlType.kPosition);
-    }
-
-    public void setProfiledPIDPosition(ElevatorPositions position) {
-        targetElevatorPosition = position;
-        if(getElevatorPosition() >= 0){
-            backElevatorMotor.set(-pidController.calculate(getElevatorPosition(), position.getValueRotations()));
-        }
-        else{
-            backElevatorMotor.set(0);
-        }
     }
 
     public ElevatorPositions getElevatorTarget() {
@@ -182,22 +185,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         return frontElevatorLimitSwitch.get();
     }
 
-    public double differenceInVelocity() {
-        return backElevatorMotor.getEncoder().getVelocity() - frontElevatorMotor.getEncoder().getVelocity();
-    }
-
-    public void setTargetPosition(ElevatorPositions elevatorPosition){
+    public void setTargetPosition(ElevatorPositions elevatorPosition) {
         targetElevatorPosition = elevatorPosition;
     }
-
-    // public boolean pidWithinBounds(ElevatorPositions position, double positionTolerance, double velocityTolerance) {
-    //     double upperbound = position.getValue() + positionTolerance;
-    //     double lowerbound = position.getValue() - positionTolerance;
-    //     boolean withinPosition = getElevatorPosition() <= upperbound && getElevatorPosition() >= lowerbound;
-    //     boolean withinVelocity = getElevatorVelocity() <= Math.abs(velocityTolerance)
-    //             && getElevatorVelocity() >= -Math.abs(velocityTolerance);
-    //     return (withinPosition && withinVelocity);
-    // }
 
     public void zeroElevatorPosition() {
         System.out.println("Resetting Elevator Encoder...");
@@ -211,19 +201,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     // public double encoderToInch() {
-    //     return 2.91627 * getElevatorPosition() + 8;
+    // return 2.91627 * getElevatorPosition() + 8;
     // }
 
     // public double inchToEncoder() {
-    //     return 0.000000723783 * Math.pow(getElevatorPosition(), 4)
-    //             - 0.000158195 * Math.pow(getElevatorPosition(), 3)
-    //             + 0.0113236 * Math.pow(getElevatorPosition(), 2)
-    //             + 0.0272627 * getElevatorPosition()
-    //             + 0;
+    // return 0.000000723783 * Math.pow(getElevatorPosition(), 4)
+    // - 0.000158195 * Math.pow(getElevatorPosition(), 3)
+    // + 0.0113236 * Math.pow(getElevatorPosition(), 2)
+    // + 0.0272627 * getElevatorPosition()
+    // + 0;
     // }
 
     // public double inchToEncoderConverter(double inches) {
-    //     return 0.329911 * inches - 1.92945;
+    // return 0.329911 * inches - 1.92945;
     // }
 
     public void setManualOffset(double manualOffset) {
@@ -238,11 +228,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         return manualOffset;
     }
 
-    public double getFrontElevatorCurrent(){
+    public double getFrontElevatorCurrent() {
         return frontElevatorMotor.getOutputCurrent();
     }
 
-    public double getBackElevatorCurrent(){
+    public double getBackElevatorCurrent() {
         return backElevatorMotor.getOutputCurrent();
     }
 }
