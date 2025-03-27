@@ -40,6 +40,7 @@ import frc.robot.commands.CoralAlgaeCommands.IntakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeAlgae;
 import frc.robot.commands.CoralAlgaeCommands.OuttakeCoral;
 import frc.robot.commands.ManualCommands.ManualClimb;
+import frc.robot.commands.ManualCommands.ManualElevator;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;

@@ -44,13 +44,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         L2(4.75),
         L3(6.75),
         L4(10.45),
-        Barge(10.7),
+        Barge(10.45),
         AlgaeReefHigh(5.15),
         AlgaeReefLow(3.2),
         Processor(3.5),
         Stow(4),
         CoralStation(3.18),
-        MaxHeight(10.75),
+        MaxHeight(10.45),
         MinimumHeight(0);
 
         private final double value;
@@ -93,7 +93,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         backElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
                 .inverted(false)
-                .smartCurrentLimit(40);
+                .smartCurrentLimit(60);
 
         // kSlot0 = down PID
         // kSlot1 = up PID
@@ -103,19 +103,19 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .i(0.0000000000000015, ClosedLoopSlot.kSlot0)
                 .d(0, ClosedLoopSlot.kSlot0)
                 .iMaxAccum(0.010000000, ClosedLoopSlot.kSlot0)
-                .outputRange(-0.72, 1, ClosedLoopSlot.kSlot0)
+                .outputRange(-0.8, 1, ClosedLoopSlot.kSlot0)
 
-                .p(0.85, ClosedLoopSlot.kSlot1)
+                .p(1.5, ClosedLoopSlot.kSlot1)
                 .i(0.0000000000000015, ClosedLoopSlot.kSlot1)
                 .d(0, ClosedLoopSlot.kSlot1)
                 .iMaxAccum(0.010000000, ClosedLoopSlot.kSlot1)
-                .outputRange(-0.72, 1, ClosedLoopSlot.kSlot1);
+                .outputRange(-0.8, 1, ClosedLoopSlot.kSlot1);
         ;
 
         // front motor is follower
         frontElevatorMotorConfig
                 .inverted(false)
-                .smartCurrentLimit(40)
+                .smartCurrentLimit(60)
                 .idleMode(IdleMode.kBrake)
                 .follow(backElevatorMotor.getDeviceId());
 
@@ -123,7 +123,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
         frontElevatorMotor.configure(frontElevatorMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-
     }
 
     public double getBackElevatorSpeed() {
