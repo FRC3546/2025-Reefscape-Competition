@@ -272,7 +272,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPoseSlow(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        3.0, 1.0,
+        3.0, 1.25,
         Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -286,7 +286,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPoseFast(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        3.5, 2,
+        3.6, 2.75,
         Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -477,6 +477,11 @@ public class SwerveSubsystem extends SubsystemBase {
     translatedY += (reefAlignmentConstants.reefSpacing - coralOffset)
         * Math.sin(z1 + Math.PI / 2);
 
+    double pushOffset = -0.051;
+    translatedX += pushOffset * Math.cos(z1);
+    translatedY += pushOffset * Math.sin(z1);
+    
+
     return driveToPoseFast(new Pose2d(translatedX, translatedY, new Rotation2d(translatedRot)));
   }
 
@@ -551,9 +556,9 @@ public class SwerveSubsystem extends SubsystemBase {
     double translatedY = y1 + ((reefAlignmentConstants.robotWidth / 2) * Math.sin(z1));
     double translatedRot = z1;
 
-    translatedX += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.algaeScoreOffset)
+    translatedX += ((reefAlignmentConstants.reefSpacing/2) - reefAlignmentConstants.algaeScoreOffset)
         * Math.cos(z1 - Math.PI / 2);
-    translatedY += (reefAlignmentConstants.reefSpacing - reefAlignmentConstants.algaeScoreOffset)
+    translatedY += ((reefAlignmentConstants.reefSpacing/2) - reefAlignmentConstants.algaeScoreOffset)
         * Math.sin(z1 - Math.PI / 2);
 
     

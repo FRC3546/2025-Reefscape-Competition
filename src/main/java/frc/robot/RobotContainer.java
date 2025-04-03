@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.Event;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -148,6 +150,8 @@ public class RobotContainer {
         public RobotContainer() {
                 elevatorSubsystem.setManualOffset(0);
                 elevatorSubsystem.zeroElevatorPosition();
+                
+
                 NamedCommands.registerCommand("Elevator to L4",
                                 new SequentialCommandGroup(
                                                 new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L4,
@@ -172,21 +176,45 @@ public class RobotContainer {
                                                                                 * ElevatorPositions.L2
                                                                                                 .getValueRotations())));
 
-                NamedCommands.registerCommand("Elevator to L3",
-                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L3, elevatorSubsystem,
-                                                ElevatorPositions.L3));
-                NamedCommands.registerCommand("Elevator to L2",
-                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L2, elevatorSubsystem,
-                                                ElevatorPositions.L2));
-                NamedCommands.registerCommand("Elevator to L1",
-                                new AutoScoringPosition(coralAlgaeSubsystem, CoralPivotPositions.L1, elevatorSubsystem,
-                                                ElevatorPositions.L1));
+                NamedCommands.registerCommand("Stop Algae Intake",
+                                new SequentialCommandGroup(
+                                                
+                                                new IntakeAlgae(coralAlgaeSubsystem, 0)));
+
+                NamedCommands.registerCommand("Algae Intake Low",
+                                new SequentialCommandGroup(
+                                                new AutoScoringPosition(coralAlgaeSubsystem,
+                                                                CoralPivotPositions.AlgaeReef, elevatorSubsystem,
+                                                                ElevatorPositions.AlgaeReefLow),
+                                                new InstantCommand(() -> coralAlgaeSubsystem
+                                                                .setPIDPosition(CoralPivotPositions.AlgaeReef)),
+                                                new IntakeAlgae(coralAlgaeSubsystem, 0.7)));
+
+                NamedCommands.registerCommand("Algae Intake High",
+                                new SequentialCommandGroup(
+                                                new AutoScoringPosition(coralAlgaeSubsystem,
+                                                                CoralPivotPositions.AlgaeReef, elevatorSubsystem,
+                                                                ElevatorPositions.AlgaeReefHigh),
+                                                new InstantCommand(() -> coralAlgaeSubsystem
+                                                                .setPIDPosition(CoralPivotPositions.AlgaeReef)),
+                                                new IntakeAlgae(coralAlgaeSubsystem, 0.7).withTimeout(4)));
+
+                NamedCommands.registerCommand("Barge Score",
+                                new SequentialCommandGroup(
+                                                new BargeScore(coralAlgaeSubsystem, elevatorSubsystem)));
+
+                NamedCommands.registerCommand("Score Algae",
+                                new SequentialCommandGroup(
+                                                new OuttakeAlgae(coralAlgaeSubsystem, -0.5).withTimeout(1.5)));
+
                 NamedCommands.registerCommand("Coral Station Intake",
                                 new AutoCoralStationIntake(coralAlgaeSubsystem, elevatorSubsystem));
                 NamedCommands.registerCommand("Stow", new AutoStow(coralAlgaeSubsystem, elevatorSubsystem));
                 NamedCommands.registerCommand("Score Coral",
-                                new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(0.75));
+                                new OuttakeCoral(coralAlgaeSubsystem, 1.0).withTimeout(0.6));
 
+
+                autoChooser.addOption("TEST NOT Processor Side 3", swerveSubsystem.getAutonomousCommand("Copy of 3 NoProcessor Side"));
                 autoChooser.addOption("Processor Side 2.5", swerveSubsystem.getAutonomousCommand("3 Processor Side"));
                 autoChooser.addOption("NOT Processor Side 2.5",
                                 swerveSubsystem.getAutonomousCommand("3 NoProcessor Side"));
@@ -221,7 +249,7 @@ public class RobotContainer {
          */
         private void configureBindings() {
 
-                new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.3));
+                new Trigger(() -> buttonBoard.getY() > 0).whileTrue(new ManualClimb(climberSubsystem, () -> 0.5));
 
                 // buttonBoard.button(rightOffsetButton).onTrue(new InstantCommand(() ->
                 // elevatorSubsystem
@@ -289,7 +317,7 @@ public class RobotContainer {
 
                 buttonBoard.button(fireButton).and(() -> !coralAlgaeSubsystem.coralIntaking)
                                 .whileFalse(new OuttakeAlgae(coralAlgaeSubsystem, 0))
-                                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.5625))
+                                .whileTrue(new OuttakeAlgae(coralAlgaeSubsystem, -0.5))
                                 .onFalse(new SequentialCommandGroup(new WaitCommand(1),
                                                 new Stow(coralAlgaeSubsystem, elevatorSubsystem)));
 
@@ -331,26 +359,36 @@ public class RobotContainer {
 
                 // AUTO ALIGN BUTTONS
                 // CORAL STATION INTAKE AUTO ALIGN
-                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> (elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(
+                                () -> ((elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation)
+                                                || (elevatorSubsystem
+                                                                .getTargetElevatorPosition() == ElevatorPositions.Stow)))
                                 .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
                                 .whileTrue(new DeferredCommand(
                                                 () -> swerveSubsystem.coralStationAutoAlign(),
                                                 Set.of(swerveSubsystem)));
 
-                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> (elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(
+                                () -> ((elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation)
+                                                || (elevatorSubsystem
+                                                                .getTargetElevatorPosition() == ElevatorPositions.Stow)))
                                 .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
                                 .whileTrue(new DeferredCommand(
                                                 () -> swerveSubsystem.coralStationAutoAlign(),
                                                 Set.of(swerveSubsystem)));
                 // CORAL L2-L4 AUTO ALIGN
-                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking)
+                                .and(() -> !(elevatorSubsystem
+                                                .getTargetElevatorPosition() == ElevatorPositions.CoralStation))
                                 .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
                                 .whileTrue(new DeferredCommand(
                                                 () -> swerveSubsystem.leftCoralAutoAlign(
                                                                 elevatorSubsystem.getElevatorTarget()),
                                                 Set.of(swerveSubsystem)));
 
-                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking)
+                                .and(() -> !(elevatorSubsystem
+                                                .getTargetElevatorPosition() == ElevatorPositions.CoralStation))
                                 .and(() -> !(elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
                                 .whileTrue(new DeferredCommand(
                                                 () -> swerveSubsystem.rightCoralAutoAlign(
@@ -358,14 +396,18 @@ public class RobotContainer {
                                                 Set.of(swerveSubsystem)));
 
                 // L1 AUTO ALIGN
-                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                driverController.button(driverLeftAlign).and(() -> coralAlgaeSubsystem.coralIntaking)
+                                .and(() -> !(elevatorSubsystem
+                                                .getTargetElevatorPosition() == ElevatorPositions.CoralStation))
                                 .and(() -> (elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
                                 .whileTrue(new DeferredCommand(
                                                 () -> swerveSubsystem.L1CoralAutoAlign(
                                                                 elevatorSubsystem.getElevatorTarget()),
                                                 Set.of(swerveSubsystem)));
 
-                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking).and(() -> !(elevatorSubsystem.getTargetElevatorPosition() == ElevatorPositions.CoralStation))
+                driverController.button(driverRightAlign).and(() -> coralAlgaeSubsystem.coralIntaking)
+                                .and(() -> !(elevatorSubsystem
+                                                .getTargetElevatorPosition() == ElevatorPositions.CoralStation))
                                 .and(() -> (elevatorSubsystem.getElevatorTarget() == ElevatorPositions.L1))
                                 .whileTrue(new DeferredCommand(
                                                 () -> swerveSubsystem.L1CoralAutoAlign(

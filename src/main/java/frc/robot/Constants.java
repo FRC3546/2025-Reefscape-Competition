@@ -55,7 +55,7 @@ public final class Constants {
     public static final double reefSpacing = 0.1643126;
     public static final double robotWidth = Units.inchesToMeters(37.25 + 5);
     public static final double coralScoreOffset = Units.inchesToMeters(1.25);
-    public static final double algaeScoreOffset = Units.inchesToMeters(-1.65);
+    public static final double algaeScoreOffset = Units.inchesToMeters(2.5);
   }
 
   public enum reefScoreLocation {

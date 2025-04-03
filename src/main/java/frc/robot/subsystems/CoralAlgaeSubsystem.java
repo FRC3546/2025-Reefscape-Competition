@@ -34,8 +34,8 @@ public class CoralAlgaeSubsystem extends SubsystemBase {
         L3(0.72 + 0.021),
         L4(0.758 + 0.021),
         AlgaeReef(0.477),
-        Barge(0.38),
-        Stow(0.26 + 0.021),
+        Barge(0.42),
+        Stow(0.235 + 0.021),
         CoralStation(.215 + 0.021),
         MinimumAngle(.5),
         MaximumAngle(.5);
